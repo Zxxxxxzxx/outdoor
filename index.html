@@ -158,6 +158,38 @@
     .quick-value { margin: 0; font-size: 22px; line-height: 1.08; letter-spacing: -0.04em; font-weight: 800; }
     .quick-sub { margin-top: 8px; font-size: 12px; color: var(--muted); }
     .stars { color: var(--caramel); font-size: 18px; letter-spacing: 0.06em; }
+    .mobile-brief {
+      display: none;
+      padding: 16px 18px;
+      border-radius: var(--radius-xl);
+      margin-bottom: 16px;
+    }
+    .mobile-brief-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .mobile-brief-item {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.46);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+    }
+    .mobile-brief-item.wide { grid-column: 1 / -1; }
+    .mobile-brief-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .mobile-brief-item span {
+      display: block;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink);
+      font-weight: 700;
+    }
     .meeting-card {
       padding: 22px;
       border-radius: var(--radius-xl);
@@ -354,18 +386,79 @@
     .tab.active { background: rgba(183, 116, 63, 0.14); color: var(--caramel-deep); }
     .footer { padding: 10px 4px 0; color: var(--muted); font-size: 12px; }
     @media (max-width: 720px) {
-      body { padding: 18px 12px 112px; }
-      .topbar { flex-direction: column; align-items: flex-start; }
-      .hero { min-height: 380px; }
+      body { padding: 16px 12px 94px; }
+      .topbar { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+      .top-note {
+        width: 100%;
+        white-space: normal;
+        border-radius: 18px;
+        padding: 12px 14px;
+      }
+      .hero {
+        min-height: 260px;
+        padding: 16px;
+        margin-bottom: 12px;
+        background-position: center 38%;
+      }
       .hero-copy { width: 100%; }
-      .quick-grid, .meeting-grid, .meeting-meta { grid-template-columns: 1fr 1fr; }
+      .hero-title { font-size: clamp(30px, 9vw, 44px); }
+      .hero-desc { margin-top: 10px; max-width: none; font-size: 13px; line-height: 1.65; }
+      .mobile-brief { display: block; }
+      .quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+      .quick-card { padding: 14px; border-radius: 18px; }
+      .quick-label { margin-bottom: 6px; font-size: 11px; }
+      .quick-value { font-size: 20px; }
+      .quick-sub { margin-top: 6px; font-size: 11px; line-height: 1.4; }
+      .meeting-card,
+      .panel { padding: 18px; border-radius: 24px; }
+      .section-kicker { margin-bottom: 6px; }
+      .section-title { font-size: 24px; }
+      .section-desc { margin-top: 8px; font-size: 13px; line-height: 1.65; }
+      .meeting-grid,
+      .meeting-meta { display: none; }
+      .map-links { gap: 8px; margin-top: 12px; }
+      .map-link { min-height: 36px; padding: 0 12px; font-size: 12px; }
+      .panel-list { margin-top: 12px; gap: 10px; }
+      .panel-inline { margin-top: 12px; gap: 6px; }
+      .meeting-box,
+      .panel-item { padding: 14px 15px; }
+      .panel-item strong,
+      .meeting-box strong { margin-bottom: 4px; font-size: 14px; }
+      .panel-item span,
+      .meeting-box span { font-size: 12px; line-height: 1.6; }
       .gallery-grid { grid-template-columns: 1fr; }
-      .tabbar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .gallery-photo { height: 180px; }
+      .tabbar {
+        left: 8px;
+        right: 8px;
+        bottom: 10px;
+        transform: none;
+        width: auto;
+        padding: 8px;
+        border-radius: 22px;
+      }
+      .tabbar-grid {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .tabbar-grid::-webkit-scrollbar { display: none; }
+      .tab {
+        flex: 0 0 auto;
+        min-width: 122px;
+        min-height: 46px;
+        padding: 8px 12px;
+        text-align: left;
+      }
+      .tab strong { font-size: 12px; }
+      .tab span { margin-top: 3px; font-size: 10px; }
     }
     @media (max-width: 520px) {
-      .quick-grid, .meeting-grid, .meeting-meta { grid-template-columns: 1fr; }
-      .hero-title { font-size: 42px; }
-      .section-title { font-size: 24px; }
+      .mobile-brief-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 34px; }
+      .section-title { font-size: 22px; }
     }
   </style>
 </head>
@@ -387,6 +480,31 @@
         <div class="hero-copy">
           <h2 class="hero-title" id="site-title">华东户外线路库</h2>
           <p class="hero-desc" id="weekly-summary">轻装一日徒步，适合新手与进阶混编队伍。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mobile-brief glass">
+      <div class="mobile-brief-grid">
+        <div class="mobile-brief-item" id="mobile-box-status">
+          <strong>当前状态</strong>
+          <span id="mobile-status">报名中</span>
+        </div>
+        <div class="mobile-brief-item" id="mobile-box-time">
+          <strong>集合时间</strong>
+          <span id="mobile-meeting-time">08:30 AM</span>
+        </div>
+        <div class="mobile-brief-item wide" id="mobile-box-place">
+          <strong>集合点</strong>
+          <span id="mobile-meeting-place">德清高铁站 2 号口 · 到站后统一上车</span>
+        </div>
+        <div class="mobile-brief-item" id="mobile-box-drive">
+          <strong>预计车程</strong>
+          <span id="mobile-drive-time">待填写</span>
+        </div>
+        <div class="mobile-brief-item" id="mobile-box-service">
+          <strong>服务区</strong>
+          <span id="mobile-service-area">待填写</span>
         </div>
       </div>
     </section>
@@ -531,6 +649,11 @@
       document.getElementById("meeting-time").textContent = data.weekly.meeting_time;
       document.getElementById("drive-time").textContent = data.weekly.drive_time || "";
       document.getElementById("service-area").textContent = data.weekly.service_area || "";
+      document.getElementById("mobile-status").textContent = data.weekly.status || "待确认";
+      document.getElementById("mobile-meeting-place").textContent = data.weekly.meeting_place || "待填写";
+      document.getElementById("mobile-meeting-time").textContent = data.weekly.meeting_time || "待填写";
+      document.getElementById("mobile-drive-time").textContent = data.weekly.drive_time || "待填写";
+      document.getElementById("mobile-service-area").textContent = data.weekly.service_area || "待填写";
       document.getElementById("meeting-desc").textContent = data.weekly.route_brief;
       document.getElementById("route-brief").textContent = data.weekly.route_brief;
 
@@ -547,6 +670,11 @@
       toggleBlock("box-meeting-time", data.weekly.meeting_time);
       toggleBlock("box-drive-time", data.weekly.drive_time);
       toggleBlock("box-service-area", data.weekly.service_area);
+      toggleBlock("mobile-box-status", data.weekly.status);
+      toggleBlock("mobile-box-time", data.weekly.meeting_time);
+      toggleBlock("mobile-box-place", data.weekly.meeting_place);
+      toggleBlock("mobile-box-drive", data.weekly.drive_time);
+      toggleBlock("mobile-box-service", data.weekly.service_area);
 
       if (data.weekly.itinerary) {
         document.getElementById("weekly-itinerary").textContent = data.weekly.itinerary;
