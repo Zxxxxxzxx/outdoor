@@ -1,0 +1,199 @@
+{
+  "site": {
+    "title": "华东户外线路库",
+    "kicker": "Huadong Outdoor Library",
+    "note": "首页只放要项，细节收进线路库"
+  },
+  "weekly": {
+    "date": "2026 / 04 / 18 · 周六",
+    "summary": "轻装一日徒步，适合新手与进阶混编队伍。",
+    "difficulty": "★★★☆☆",
+    "difficulty_label": "中等偏轻",
+    "mileage": "12km",
+    "mileage_label": "轻装往返",
+    "elevation": "",
+    "elevation_label": "",
+    "status": "报名中",
+    "status_label": "余位可报",
+    "meeting_place": "德清高铁站 2 号口 · 到站后统一上车",
+    "meeting_time": "08:30 AM · 迟到不等",
+    "drive_time": "",
+    "service_area": "",
+    "route_brief": "集合、强度、取消规则、风险提醒，都先在这一页解决。",
+    "itinerary": "",
+    "route_items": [
+      {
+        "title": "线路概况",
+        "text": "12km / 800m+ / 预计 6-7 小时 / 轻装一日徒步。"
+      },
+      {
+        "title": "核心提醒",
+        "text": "雨后石阶和林下土路湿滑，队伍按最慢队员控速，不走野路。"
+      },
+      {
+        "title": "取消规则",
+        "text": "遇雷暴、强对流或持续强降雨，直接取消或改平缓替代线。"
+      }
+    ],
+    "cta_primary_label": "查看历史线路",
+    "cta_primary_href": "routes.html",
+    "cta_secondary_label": "打开装备页",
+    "cta_secondary_href": "#panel-gear",
+    "route_map_url": "",
+    "retreat_map_url": "",
+    "backup_map_url": ""
+  },
+  "routeLibrary": {
+    "intro": "每条路线一个页面。去一次补一次，把功课、风险、复盘都沉淀下来。",
+    "routes": [
+      {
+        "id": "moganshan",
+        "name": "莫干山",
+        "region": "浙江 · 湖州",
+        "difficulty": "★★★☆☆",
+        "season": "春 / 秋 / 初冬",
+        "drive_time": "",
+        "estimated_time": "6-7 小时",
+        "distance": "12km",
+        "elevation": "800m+",
+        "duration": "6-7 小时",
+        "suitable": "新手可报，领队要控速",
+        "weather_rule": "雷暴、强对流、连续暴雨后取消；高温天缩线。",
+        "prep": [
+          "速干衣、长裤、徒步鞋、雨具、头灯、2L 水。",
+          "雨后重点提醒石阶和林下土路湿滑。",
+          "集合后先讲控速、报数和掉队规则。"
+        ],
+        "risks": [
+          "石阶青苔和竹林土路容易滑。",
+          "岔路口多，必须等人。",
+          "夏季闷热，容易中暑和抽筋。"
+        ],
+        "animals": [
+          "蜱虫",
+          "马蜂",
+          "蛇"
+        ],
+        "review": {
+          "summary": "适合作为带新人的经典线，但雨后和高温天都要降强度。",
+          "notes": [
+            "下坡石阶是最拖节奏的区段。",
+            "新手最容易在岔路口拉开队伍。",
+            "适合做领队口播训练线。"
+          ]
+        },
+        "gallery": []
+      },
+      {
+        "id": "qiyunshan",
+        "name": "齐云山",
+        "region": "安徽 · 黄山",
+        "difficulty": "★★★☆☆",
+        "season": "春 / 秋",
+        "drive_time": "",
+        "estimated_time": "5-6 小时",
+        "distance": "10km",
+        "elevation": "650m+",
+        "duration": "5-6 小时",
+        "suitable": "适合新手和摄影向队伍",
+        "weather_rule": "冷雨天不建议走长暴露段；大风天缩线。",
+        "prep": [
+          "建议带轻保暖层和防风外套。",
+          "石板路雨后很滑，登山杖有帮助。",
+          "提前确认返程交通和日落时间。"
+        ],
+        "risks": [
+          "石板路和台阶湿滑。",
+          "景区与野路切换处容易断队。",
+          "风大时山脊体感偏冷。"
+        ],
+        "animals": [
+          "蜱虫",
+          "马蜂"
+        ],
+        "review": {
+          "summary": "景观强、节奏稳，适合做轻强度精品线。",
+          "notes": [
+            "拍照停留多，领队要控总时长。",
+            "台阶段容易把队伍拉成长条。"
+          ]
+        },
+        "gallery": []
+      },
+      {
+        "id": "siming",
+        "name": "四明山古道线",
+        "region": "浙江 · 宁波",
+        "difficulty": "★★★★☆",
+        "season": "秋 / 冬 / 早春",
+        "drive_time": "",
+        "estimated_time": "7-8 小时",
+        "distance": "15km",
+        "elevation": "1000m+",
+        "duration": "7-8 小时",
+        "suitable": "适合有徒步经验队员",
+        "weather_rule": "连续降雨后不建议带大队伍；高温天改短线。",
+        "prep": [
+          "必须穿抓地力好的鞋。",
+          "补给建议比常规一日线多带一顿。",
+          "队尾和中间协助必须明确。"
+        ],
+        "risks": [
+          "长下坡碎石路容易扭伤。",
+          "林道岔口多，收队必须跟紧。",
+          "局部信号不稳定。"
+        ],
+        "animals": [
+          "蜱虫",
+          "蛇",
+          "蚂蟥（雨后）"
+        ],
+        "review": {
+          "summary": "强度和带队管理要求都更高，适合做进阶队伍训练线。",
+          "notes": [
+            "不适合临时放大量新手。",
+            "最怕雨后碎石下坡。",
+            "要提前讲清撤退点和折返点。"
+          ]
+        },
+        "gallery": []
+      }
+    ]
+  },
+  "gear": {
+    "intro": "装备页只讲标准，不讲长篇原理。",
+    "pills": [
+      "夏季徒步",
+      "冬季徒步",
+      "雨天徒步",
+      "夜爬装备",
+      "领队公共装备"
+    ],
+    "notes": [
+      {
+        "title": "必带",
+        "text": "徒步鞋、双肩包、速干衣、长裤、雨具、头灯、水、补给、手机、充电宝。"
+      },
+      {
+        "title": "禁止项",
+        "text": "凉鞋、皮鞋、牛仔裤、无雨具、无水、无照明。"
+      }
+    ]
+  },
+  "sceneryTab": {
+    "intro": "把线路实景、路感和关键路段照片留在这里，队员出发前先建立直觉。"
+  },
+  "about": {
+    "intro": "先把内容和结构跑通，再决定要不要公开更多个人信息。",
+    "notes": [
+      {
+        "title": "带队原则",
+        "text": "先控风险，再控节奏，最后才是体验。"
+      },
+      {
+        "title": "当前状态",
+        "text": "第一版先不公开微信，先把线路内容沉淀起来。"
+      }
+    ]
+  }
+}

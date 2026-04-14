@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>华东户外线路库</title>
+  <style>
+    :root {
+      --bg: #f5f3ee;
+      --paper: rgba(255, 255, 255, 0.5);
+      --line: rgba(255, 255, 255, 0.72);
+      --line-soft: rgba(255, 255, 255, 0.45);
+      --ink: #25302d;
+      --muted: #69726f;
+      --caramel: #b8743f;
+      --caramel-deep: #9e6230;
+      --slate: #4a5853;
+      --shadow: 0 24px 60px rgba(37, 48, 45, 0.08);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      padding: 26px 16px 112px;
+      background:
+        radial-gradient(circle at top left, rgba(184, 116, 63, 0.08), transparent 24%),
+        radial-gradient(circle at top right, rgba(225, 232, 223, 0.82), transparent 28%),
+        linear-gradient(180deg, #fbfaf7 0%, var(--bg) 100%);
+      color: var(--ink);
+      font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    .shell { width: min(780px, 100%); margin: 0 auto; }
+    .glass {
+      background: var(--paper);
+      border: 1px solid var(--line-soft);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .brand-kicker {
+      margin: 0 0 4px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--caramel);
+      font-weight: 700;
+    }
+    .brand-title {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      font-weight: 800;
+    }
+    .top-note {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 420px;
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      background:
+        linear-gradient(0deg, rgba(245, 243, 238, 0.24), rgba(245, 243, 238, 0.24)),
+        linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.08)),
+        url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat;
+      border: 1px solid rgba(255,255,255,0.62);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(247,244,239,0.18), rgba(247,244,239,0.52));
+      pointer-events: none;
+    }
+    .hero-top, .hero-bottom { position: relative; z-index: 1; }
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      font-size: 12px;
+      color: var(--ink);
+      font-weight: 700;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .hero-copy {
+      width: min(100%, 480px);
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.36);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .hero-label {
+      margin: 0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--caramel);
+      font-weight: 800;
+    }
+    .hero-title {
+      margin: 0;
+      font-size: clamp(38px, 6vw, 68px);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+      font-weight: 800;
+    }
+    .hero-date {
+      margin: 12px 0 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .hero-desc {
+      margin: 12px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 34ch;
+    }
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .quick-card { border-radius: var(--radius-lg); padding: 18px 16px; }
+    .quick-label { margin: 0 0 8px; font-size: 12px; color: var(--muted); }
+    .quick-value { margin: 0; font-size: 22px; line-height: 1.08; letter-spacing: -0.04em; font-weight: 800; }
+    .quick-sub { margin-top: 8px; font-size: 12px; color: var(--muted); }
+    .stars { color: var(--caramel); font-size: 18px; letter-spacing: 0.06em; }
+    .meeting-card {
+      padding: 22px;
+      border-radius: var(--radius-xl);
+      margin-bottom: 16px;
+    }
+    .section-kicker {
+      margin: 0 0 8px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--caramel);
+      font-weight: 800;
+    }
+    .section-title {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      font-weight: 800;
+    }
+    .section-desc {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 46ch;
+    }
+    .meeting-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .meeting-box,
+    .panel-item {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .meeting-box strong,
+    .panel-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+    .meeting-box span,
+    .panel-item span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .meeting-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: var(--caramel);
+      color: #fffaf4;
+      box-shadow: 0 12px 28px rgba(183, 116, 63, 0.24);
+    }
+    .btn-primary:hover { background: var(--caramel-deep); }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      color: var(--ink);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .map-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.52);
+      border: 1px solid rgba(255,255,255,0.84);
+      color: var(--caramel-deep);
+      font-size: 12px;
+      font-weight: 800;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .panel {
+      display: none;
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+    .panel.active { display: block; }
+    .panel-list { margin: 16px 0 0; display: grid; gap: 12px; }
+    .panel-inline { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .panel-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(234, 215, 193, 0.36);
+      border: 1px solid rgba(183, 116, 63, 0.16);
+      color: var(--slate);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .gallery-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .gallery-card {
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .gallery-photo {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+    .gallery-caption {
+      padding: 12px 14px 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .empty-note {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px dashed rgba(183, 116, 63, 0.2);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .tabbar {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      width: min(760px, calc(100vw - 20px));
+      padding: 10px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 18px 44px rgba(37, 48, 45, 0.1);
+      z-index: 30;
+    }
+    .tabbar-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .tab {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 18px;
+      min-height: 54px;
+      padding: 8px 10px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .tab strong { display: block; font-size: 13px; font-weight: 800; line-height: 1.1; }
+    .tab span { display: block; margin-top: 4px; font-size: 11px; line-height: 1.2; opacity: 0.78; }
+    .tab.active { background: rgba(183, 116, 63, 0.14); color: var(--caramel-deep); }
+    .footer { padding: 10px 4px 0; color: var(--muted); font-size: 12px; }
+    @media (max-width: 720px) {
+      body { padding: 18px 12px 112px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .hero { min-height: 380px; }
+      .hero-copy { width: 100%; }
+      .quick-grid, .meeting-grid, .meeting-meta { grid-template-columns: 1fr 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .tabbar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      .quick-grid, .meeting-grid, .meeting-meta { grid-template-columns: 1fr; }
+      .hero-title { font-size: 42px; }
+      .section-title { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div>
+        <p class="brand-kicker" id="site-kicker">Huadong Outdoor Library</p>
+        <h1 class="brand-title" id="weekly-date">2026 / 04 / 18 · 周六</h1>
+      </div>
+      <div class="top-note" id="site-note">首页只放要项，细节收进线路库</div>
+    </header>
+
+    <section class="hero glass">
+      <div class="hero-top">
+        <span class="hero-chip">This Week's Route</span>
+      </div>
+      <div class="hero-bottom">
+        <div class="hero-copy">
+          <h2 class="hero-title" id="site-title">华东户外线路库</h2>
+          <p class="hero-desc" id="weekly-summary">轻装一日徒步，适合新手与进阶混编队伍。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="quick-grid">
+      <div class="quick-card glass" id="card-difficulty">
+        <p class="quick-label">难度</p>
+        <p class="quick-value stars" id="weekly-difficulty">★★★☆☆</p>
+        <div class="quick-sub" id="weekly-difficulty-label">中等偏轻</div>
+      </div>
+      <div class="quick-card glass" id="card-mileage">
+        <p class="quick-label">里程</p>
+        <p class="quick-value" id="weekly-mileage">12km</p>
+        <div class="quick-sub" id="weekly-mileage-label">轻装往返</div>
+      </div>
+      <div class="quick-card glass" id="card-elevation">
+        <p class="quick-label">爬升</p>
+        <p class="quick-value" id="weekly-elevation">800m+</p>
+        <div class="quick-sub" id="weekly-elevation-label">缓升为主</div>
+      </div>
+      <div class="quick-card glass" id="card-status">
+        <p class="quick-label">状态</p>
+        <p class="quick-value" id="weekly-status" style="color: var(--caramel);">报名中</p>
+        <div class="quick-sub" id="weekly-status-label">余位可报</div>
+      </div>
+    </section>
+
+    <section class="meeting-card glass">
+      <p class="section-kicker">Meeting Info</p>
+      <h2 class="section-title">集合指令</h2>
+      <p class="section-desc" id="meeting-desc">首页只保留必须知道的信息：几点、在哪、怎么准备。</p>
+      <div class="meeting-grid">
+        <div class="meeting-box" id="box-meeting-place">
+          <strong>集合点</strong>
+          <span id="meeting-place">德清高铁站 2 号口 · 到站后统一上车</span>
+        </div>
+        <div class="meeting-box" id="box-meeting-time">
+          <strong>集合时间</strong>
+          <span id="meeting-time">08:30 AM · 迟到不等</span>
+        </div>
+      </div>
+      <div class="meeting-meta">
+        <div class="meeting-box" id="box-drive-time">
+          <strong>预计车程</strong>
+          <span id="drive-time">待填写</span>
+        </div>
+        <div class="meeting-box" id="box-service-area">
+          <strong>停留服务区</strong>
+          <span id="service-area">待填写</span>
+        </div>
+      </div>
+      <div class="map-links" id="weekly-map-links"></div>
+    </section>
+
+    <section class="panel glass active" id="panel-route">
+      <p class="section-kicker">Tab 01</p>
+      <h2 class="section-title">本周行程</h2>
+      <p class="section-desc" id="route-brief">集合、强度、取消规则、风险提醒，都先在这一页解决。</p>
+      <div class="panel-list" id="itinerary-wrap" style="display:none">
+        <div class="panel-item">
+          <strong>行程安排</strong>
+          <span id="weekly-itinerary" style="white-space: pre-line;"></span>
+        </div>
+      </div>
+      <div class="panel-list" id="route-items"></div>
+    </section>
+
+    <section class="panel glass" id="panel-gear">
+      <p class="section-kicker">Tab 02</p>
+      <h2 class="section-title">详细装备</h2>
+      <p class="section-desc" id="gear-intro">装备页只讲可执行标准，不讲长篇原理。</p>
+      <div class="panel-inline" id="gear-pills"></div>
+      <div class="panel-list" id="gear-notes"></div>
+    </section>
+
+    <section class="panel glass" id="panel-scenery">
+      <p class="section-kicker">Tab 03</p>
+      <h2 class="section-title">线路实景</h2>
+      <p class="section-desc" id="scenery-intro">让队员先看到路感，再决定怎么准备。</p>
+      <div class="gallery-grid" id="scenery-gallery"></div>
+      <div class="empty-note" id="scenery-empty" style="display:none">当前路线还没上传实景图。</div>
+    </section>
+
+    <section class="panel glass" id="panel-about">
+      <p class="section-kicker">Tab 04</p>
+      <h2 class="section-title">关于我</h2>
+      <p class="section-desc" id="about-intro">这里后面放你的带队理念、适合同行的人，以及联系方式。</p>
+      <div class="panel-list" id="about-notes"></div>
+    </section>
+
+    <div class="footer">华东户外线路库 v0.4 · Deployable Static Version</div>
+  </div>
+
+  <nav class="tabbar glass">
+    <div class="tabbar-grid">
+      <button class="tab active" data-target="panel-route"><strong>本周行程</strong><span>核心要项</span></button>
+      <button class="tab" data-target="panel-gear"><strong>详细装备</strong><span>出发前看</span></button>
+      <button class="tab" data-target="panel-scenery"><strong>线路实景</strong><span>先看路感</span></button>
+      <button class="tab" data-target="panel-about"><strong>关于我</strong><span>领队介绍</span></button>
+    </div>
+  </nav>
+
+  <script src="./assets/site.js"></script>
+  <script>
+    const tabs = [...document.querySelectorAll(".tab")];
+    const panels = [...document.querySelectorAll(".panel")];
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.target;
+        tabs.forEach(item => item.classList.toggle("active", item === tab));
+        panels.forEach(panel => panel.classList.toggle("active", panel.id === target));
+      });
+    });
+
+    function renderGallery(containerId, items) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      el.innerHTML = (items || []).map(item => `
+        <div class="gallery-card">
+          <img class="gallery-photo" src="${item.src}" alt="${item.caption || "线路实景"}">
+          <div class="gallery-caption">${item.caption || "线路实景"}</div>
+        </div>
+      `).join("");
+    }
+
+    loadSiteData().then(data => {
+      const weeklySceneryRoute = (data.routeLibrary.routes || []).find(route => route.name === data.site.title) || data.routeLibrary.routes[0];
+      document.getElementById("site-kicker").textContent = data.site.kicker;
+      document.getElementById("site-title").textContent = data.site.title;
+      document.getElementById("site-note").textContent = data.site.note;
+      document.getElementById("weekly-date").textContent = data.weekly.date;
+      document.getElementById("weekly-summary").textContent = data.weekly.summary;
+      document.getElementById("weekly-difficulty").textContent = data.weekly.difficulty;
+      document.getElementById("weekly-difficulty-label").textContent = data.weekly.difficulty_label;
+      document.getElementById("weekly-mileage").textContent = data.weekly.mileage;
+      document.getElementById("weekly-mileage-label").textContent = data.weekly.mileage_label;
+      document.getElementById("weekly-elevation").textContent = data.weekly.elevation;
+      document.getElementById("weekly-elevation-label").textContent = data.weekly.elevation_label;
+      document.getElementById("weekly-status").textContent = data.weekly.status;
+      document.getElementById("weekly-status-label").textContent = data.weekly.status_label;
+      document.getElementById("meeting-place").textContent = data.weekly.meeting_place;
+      document.getElementById("meeting-time").textContent = data.weekly.meeting_time;
+      document.getElementById("drive-time").textContent = data.weekly.drive_time || "";
+      document.getElementById("service-area").textContent = data.weekly.service_area || "";
+      document.getElementById("meeting-desc").textContent = data.weekly.route_brief;
+      document.getElementById("route-brief").textContent = data.weekly.route_brief;
+
+      const toggleBlock = (id, val) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.display = val ? "" : "none";
+      };
+      toggleBlock("card-difficulty", data.weekly.difficulty);
+      toggleBlock("card-mileage", data.weekly.mileage);
+      toggleBlock("card-elevation", data.weekly.elevation);
+      toggleBlock("card-status", data.weekly.status);
+      toggleBlock("box-meeting-place", data.weekly.meeting_place);
+      toggleBlock("box-meeting-time", data.weekly.meeting_time);
+      toggleBlock("box-drive-time", data.weekly.drive_time);
+      toggleBlock("box-service-area", data.weekly.service_area);
+
+      if (data.weekly.itinerary) {
+        document.getElementById("weekly-itinerary").textContent = data.weekly.itinerary;
+        document.getElementById("itinerary-wrap").style.display = "";
+      }
+
+      const weeklyMapLinks = [];
+      if (data.weekly.route_map_url) {
+        weeklyMapLinks.push(`<a class="map-link" href="${data.weekly.route_map_url}" target="_blank" rel="noopener noreferrer">正常路线图</a>`);
+      }
+      if (data.weekly.retreat_map_url) {
+        weeklyMapLinks.push(`<a class="map-link" href="${data.weekly.retreat_map_url}" target="_blank" rel="noopener noreferrer">下撤路线图</a>`);
+      }
+      if (data.weekly.backup_map_url) {
+        weeklyMapLinks.push(`<a class="map-link" href="${data.weekly.backup_map_url}" target="_blank" rel="noopener noreferrer">备用轨迹</a>`);
+      }
+      document.getElementById("weekly-map-links").innerHTML = weeklyMapLinks.join("");
+
+      document.getElementById("gear-intro").textContent = data.gear.intro;
+      document.getElementById("scenery-intro").textContent = data.sceneryTab.intro;
+      document.getElementById("about-intro").textContent = data.about.intro;
+      renderPanelList("route-items", data.weekly.route_items);
+      renderPills("gear-pills", data.gear.pills);
+      renderPanelList("gear-notes", data.gear.notes);
+      if (weeklySceneryRoute && weeklySceneryRoute.gallery && weeklySceneryRoute.gallery.length) {
+        renderGallery("scenery-gallery", weeklySceneryRoute.gallery);
+      } else {
+        document.getElementById("scenery-empty").style.display = "";
+      }
+      renderPanelList("about-notes", data.about.notes);
+    }).catch(err => {
+      console.error(err);
+      document.body.innerHTML = "<div style='padding:40px;font-family:Inter,sans-serif;color:#25302d'>读取站点数据失败，请检查 data/site.json 是否存在。</div>";
+    });
+  </script>
+</body>
+</html>
