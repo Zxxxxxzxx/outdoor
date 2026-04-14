@@ -301,6 +301,24 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
+    .map-note {
+      display: block;
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.44);
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .map-note strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
     .panel {
       display: none;
       border-radius: var(--radius-xl);
@@ -681,15 +699,24 @@
         document.getElementById("itinerary-wrap").style.display = "";
       }
 
+      const isLikelyUrl = value => /^https?:\/\//i.test(String(value || "").trim());
+      const renderMapEntry = (label, value) => {
+        if (!value) return "";
+        if (isLikelyUrl(value)) {
+          return `<a class="map-link" href="${value}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+        }
+        return `<div class="map-note"><strong>${label}</strong><span>${value}</span></div>`;
+      };
+
       const weeklyMapLinks = [];
       if (data.weekly.route_map_url) {
-        weeklyMapLinks.push(`<a class="map-link" href="${data.weekly.route_map_url}" target="_blank" rel="noopener noreferrer">正常路线图</a>`);
+        weeklyMapLinks.push(renderMapEntry("正常路线图", data.weekly.route_map_url));
       }
       if (data.weekly.retreat_map_url) {
-        weeklyMapLinks.push(`<a class="map-link" href="${data.weekly.retreat_map_url}" target="_blank" rel="noopener noreferrer">下撤路线图</a>`);
+        weeklyMapLinks.push(renderMapEntry("下撤路线图", data.weekly.retreat_map_url));
       }
       if (data.weekly.backup_map_url) {
-        weeklyMapLinks.push(`<a class="map-link" href="${data.weekly.backup_map_url}" target="_blank" rel="noopener noreferrer">备用轨迹</a>`);
+        weeklyMapLinks.push(renderMapEntry("备用轨迹", data.weekly.backup_map_url));
       }
       document.getElementById("weekly-map-links").innerHTML = weeklyMapLinks.join("");
 
