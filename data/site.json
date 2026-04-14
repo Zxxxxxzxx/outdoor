@@ -17,6 +17,7 @@
     "status_label": "余位可报",
     "meeting_place": "龙阳站 2 号口 · 到站后统一上车",
     "meeting_time": "07:15-07:30 AM · 迟到不等",
+    "plate_number": "沪A12345",
     "drive_time": "5h",
     "service_area": "嘉绍20min",
     "route_brief": "集合、强度、取消规则、风险提醒，都先在这一页解决。",
@@ -43,7 +44,8 @@
     "cta_secondary_label": "打开装备页",
     "cta_secondary_href": "#panel-gear",
     "destination": "杭州西湖线test",
-    "elevation_map_url": ""
+    "elevation_map_url": "",
+    "elevation_profile_image": ""
   },
   "routeLibrary": {
     "intro": "每条路线一个页面。去一次补一次，把功课、风险、复盘都沉淀下来。",
@@ -54,11 +56,11 @@
         "region": "杭州",
         "difficulty": "★★★★☆",
         "season": "司机",
-        "drive_time": "",
-        "estimated_time": "待填写",
+        "drive_time": "5h",
+        "estimated_time": "",
         "distance": "",
         "elevation": "",
-        "duration": "待填写",
+        "duration": "",
         "suitable": "男女老少",
         "weather_rule": "有台风 你快来",
         "prep": [
