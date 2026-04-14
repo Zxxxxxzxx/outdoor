@@ -792,6 +792,21 @@
       </div>
 
       <div class="admin-section">
+        <div class="admin-subtitle">户外常见场景</div>
+        <div class="admin-form">
+          <div class="admin-field full">
+            <label for="admin-about-intro">模块说明</label>
+            <textarea id="admin-about-intro"></textarea>
+          </div>
+          <div class="admin-field full">
+            <label for="admin-about-notes">场景条目，每行一条，格式：标题｜内容</label>
+            <textarea id="admin-about-notes"></textarea>
+          </div>
+        </div>
+        <p class="admin-note">例如：`遇到蛇｜先停下，不追打，缓慢拉开距离，提醒队伍绕行并通知领队。`</p>
+      </div>
+
+      <div class="admin-section">
         <div class="admin-subtitle">GitHub 发布设置</div>
         <div class="admin-form">
           <div class="admin-field">
@@ -930,6 +945,35 @@
         .split("\n")
         .map(line => line.trim())
         .filter(Boolean);
+    }
+
+    function panelLines(items) {
+      return (items || []).map(item => `${item.title || ""}｜${item.text || ""}`.trim()).join("\n");
+    }
+
+    function parsePanelLines(value) {
+      return String(value || "")
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(line => {
+          const parts = line.split("｜");
+          if (parts.length >= 2) {
+            return {
+              title: parts.shift().trim(),
+              text: parts.join("｜").trim(),
+            };
+          }
+          const fallback = line.split(/[:：]/);
+          if (fallback.length >= 2) {
+            return {
+              title: fallback.shift().trim(),
+              text: fallback.join("：").trim(),
+            };
+          }
+          return { title: line.trim(), text: "" };
+        })
+        .filter(item => item.title || item.text);
     }
 
     function readAdminSettings() {
@@ -1116,6 +1160,8 @@
       document.getElementById("admin-weekly-route-map-url").value = (siteData && siteData.weekly && siteData.weekly.route_map_url) || "";
       document.getElementById("admin-weekly-retreat-map-url").value = (siteData && siteData.weekly && siteData.weekly.retreat_map_url) || "";
       document.getElementById("admin-weekly-backup-map-url").value = (siteData && siteData.weekly && siteData.weekly.backup_map_url) || "";
+      document.getElementById("admin-about-intro").value = (siteData && siteData.about && siteData.about.intro) || "";
+      document.getElementById("admin-about-notes").value = panelLines(siteData && siteData.about && siteData.about.notes);
       adminElevationProfileImage = (siteData && siteData.weekly && siteData.weekly.elevation_profile_image) || "";
       document.getElementById("admin-gallery-upload").value = "";
       document.getElementById("admin-elevation-visual-upload").value = "";
@@ -1227,6 +1273,8 @@
       siteData.weekly.retreat_map_url = document.getElementById("admin-weekly-retreat-map-url").value.trim();
       siteData.weekly.backup_map_url = document.getElementById("admin-weekly-backup-map-url").value.trim();
       siteData.weekly.elevation_profile_image = adminElevationProfileImage;
+      siteData.about.intro = document.getElementById("admin-about-intro").value.trim();
+      siteData.about.notes = parsePanelLines(document.getElementById("admin-about-notes").value);
       siteData = normalizeSiteData(siteData);
       routes = siteData.routeLibrary.routes || [];
       activeRouteId = draft.id;
