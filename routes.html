@@ -458,6 +458,34 @@
       color: var(--muted);
       font-size: 13px;
     }
+    .admin-elevation-preview {
+      margin-top: 12px;
+    }
+    .admin-elevation-card {
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.58);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+    .admin-elevation-photo {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      display: block;
+      background: rgba(245,243,238,0.92);
+    }
+    .admin-elevation-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+    }
+    .admin-elevation-meta span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
     .admin-inline {
       display: flex;
       flex-wrap: wrap;
@@ -743,6 +771,11 @@
             <input id="admin-weekly-backup-map-url" type="text" placeholder="可以填链接，也可以填文字说明">
           </div>
         </div>
+        <div class="admin-inline">
+          <input id="admin-elevation-visual-upload" type="file" accept="image/*">
+        </div>
+        <p class="admin-note">这里上传 1 张海拔渲染图。会显示在首页爬升信息后面。</p>
+        <div class="admin-elevation-preview" id="admin-elevation-preview"></div>
       </div>
 
       <div class="admin-section">
@@ -841,6 +874,7 @@
     let activeRegion = "全部";
     let activeRouteId = "";
     let adminDraft = null;
+    let adminElevationProfileImage = "";
 
     const adminFab = document.getElementById("admin-fab");
     const adminOverlay = document.getElementById("admin-overlay");
@@ -1077,9 +1111,12 @@
       document.getElementById("admin-weekly-route-map-url").value = (siteData && siteData.weekly && siteData.weekly.route_map_url) || "";
       document.getElementById("admin-weekly-retreat-map-url").value = (siteData && siteData.weekly && siteData.weekly.retreat_map_url) || "";
       document.getElementById("admin-weekly-backup-map-url").value = (siteData && siteData.weekly && siteData.weekly.backup_map_url) || "";
+      adminElevationProfileImage = (siteData && siteData.weekly && siteData.weekly.elevation_profile_image) || "";
       document.getElementById("admin-gallery-upload").value = "";
+      document.getElementById("admin-elevation-visual-upload").value = "";
       fillAdminSettingsForm();
       renderAdminGallery();
+      renderAdminElevationPreview();
       adminOverlay.hidden = false;
       document.body.style.overflow = "hidden";
     }
@@ -1088,6 +1125,7 @@
       adminOverlay.hidden = true;
       document.body.style.overflow = "";
       adminDraft = null;
+      adminElevationProfileImage = "";
     }
 
     function renderAdminGallery() {
@@ -1120,6 +1158,28 @@
           renderAdminGallery();
           setAdminStatus("已从草稿里删除这张图片。", "success");
         });
+      });
+    }
+
+    function renderAdminElevationPreview() {
+      const el = document.getElementById("admin-elevation-preview");
+      if (!adminElevationProfileImage) {
+        el.innerHTML = `<div class="admin-gallery-empty">当前还没有海拔渲染图。上传后会显示在首页爬升信息后面。</div>`;
+        return;
+      }
+      el.innerHTML = `
+        <div class="admin-elevation-card">
+          <img class="admin-elevation-photo" src="${adminElevationProfileImage}" alt="海拔渲染图">
+          <div class="admin-elevation-meta">
+            <span>当前使用中的海拔渲染图。重新上传会直接替换。</span>
+            <button class="admin-btn danger" id="admin-elevation-remove-btn" type="button">删除图片</button>
+          </div>
+        </div>
+      `;
+      document.getElementById("admin-elevation-remove-btn").addEventListener("click", () => {
+        adminElevationProfileImage = "";
+        renderAdminElevationPreview();
+        setAdminStatus("已从草稿里删除海拔渲染图。", "success");
       });
     }
 
@@ -1160,6 +1220,7 @@
       siteData.weekly.route_map_url = document.getElementById("admin-weekly-route-map-url").value.trim();
       siteData.weekly.retreat_map_url = document.getElementById("admin-weekly-retreat-map-url").value.trim();
       siteData.weekly.backup_map_url = document.getElementById("admin-weekly-backup-map-url").value.trim();
+      siteData.weekly.elevation_profile_image = adminElevationProfileImage;
       siteData = normalizeSiteData(siteData);
       routes = siteData.routeLibrary.routes || [];
       activeRouteId = draft.id;
@@ -1358,6 +1419,21 @@
       } catch (err) {
         console.error(err);
         setAdminStatus(`图片处理失败：${err.message || err}`, "error");
+      } finally {
+        event.target.value = "";
+      }
+    });
+    document.getElementById("admin-elevation-visual-upload").addEventListener("change", async event => {
+      const file = (event.target.files || [])[0];
+      if (!file) return;
+      setAdminStatus("正在压缩海拔渲染图，请稍等。");
+      try {
+        adminElevationProfileImage = await compressImage(file);
+        renderAdminElevationPreview();
+        setAdminStatus("海拔渲染图已经加入当前草稿。记得点“保存并发布到公网”。", "success");
+      } catch (err) {
+        console.error(err);
+        setAdminStatus(`海拔渲染图处理失败：${err.message || err}`, "error");
       } finally {
         event.target.value = "";
       }

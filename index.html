@@ -60,9 +60,9 @@
     }
     .brand-title {
       margin: 0;
-      font-size: clamp(28px, 5vw, 42px);
+      font-size: clamp(22px, 4vw, 32px);
       line-height: 1;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.04em;
       font-weight: 800;
     }
     .top-note {
@@ -130,9 +130,9 @@
     }
     .hero-title {
       margin: 0;
-      font-size: clamp(38px, 6vw, 68px);
+      font-size: clamp(30px, 5.2vw, 50px);
       line-height: 0.92;
-      letter-spacing: -0.07em;
+      letter-spacing: -0.06em;
       font-weight: 800;
     }
     .hero-date {
@@ -149,7 +149,7 @@
     }
     .quick-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 16px;
     }
@@ -189,6 +189,39 @@
       line-height: 1.55;
       color: var(--ink);
       font-weight: 700;
+    }
+    .elevation-visual {
+      display: none;
+      padding: 18px;
+      border-radius: var(--radius-xl);
+      margin-bottom: 16px;
+    }
+    .elevation-visual.show { display: block; }
+    .elevation-visual-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .elevation-visual-title {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: -0.02em;
+      font-weight: 800;
+    }
+    .elevation-visual-note {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .elevation-visual-photo {
+      width: 100%;
+      display: block;
+      border-radius: 18px;
+      object-fit: cover;
+      max-height: 260px;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.4);
     }
     .meeting-card {
       padding: 22px;
@@ -243,9 +276,47 @@
       font-size: 13px;
       color: var(--muted);
     }
+    .itinerary-flow {
+      display: grid;
+      gap: 10px;
+      margin-top: 0;
+    }
+    .itinerary-day {
+      margin: 4px 0 0;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .itinerary-stop {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 12px 0;
+      border-top: 1px solid rgba(184, 116, 63, 0.1);
+    }
+    .itinerary-stop:first-of-type { border-top: none; }
+    .itinerary-time {
+      color: var(--caramel-deep);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .itinerary-copy {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .itinerary-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      padding-top: 4px;
+    }
     .meeting-meta {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap: 12px;
       margin-top: 12px;
     }
@@ -281,43 +352,47 @@
       -webkit-backdrop-filter: blur(16px);
     }
     .map-links {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 16px;
     }
-    .map-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 38px;
-      padding: 0 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.52);
-      border: 1px solid rgba(255,255,255,0.84);
-      color: var(--caramel-deep);
-      font-size: 12px;
-      font-weight: 800;
+    .map-card {
+      display: block;
+      min-height: 120px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.48);
+      border: 1px solid rgba(255,255,255,0.8);
+      color: var(--ink);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
-    .map-note {
+    .map-card.link { box-shadow: 0 12px 26px rgba(184, 116, 63, 0.08); }
+    .map-card strong {
       display: block;
-      width: 100%;
-      padding: 13px 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.44);
-      border: 1px solid rgba(255, 255, 255, 0.78);
-      color: var(--muted);
+      margin-bottom: 6px;
       font-size: 13px;
-      line-height: 1.6;
+      letter-spacing: -0.02em;
+      font-weight: 800;
     }
-    .map-note strong {
+    .map-card span {
       display: block;
-      margin-bottom: 4px;
-      color: var(--ink);
       font-size: 12px;
-      letter-spacing: 0.04em;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .map-card em {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 12px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(184, 116, 63, 0.12);
+      color: var(--caramel-deep);
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 800;
     }
     .panel {
       display: none;
@@ -419,15 +494,21 @@
         background-position: center 38%;
       }
       .hero-copy { width: 100%; }
-      .hero-title { font-size: clamp(30px, 9vw, 44px); }
+      .hero-title { font-size: clamp(26px, 8vw, 38px); }
       .hero-desc { margin-top: 10px; max-width: none; font-size: 13px; line-height: 1.65; }
       .mobile-brief { display: block; }
-      .quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+      .quick-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
       .quick-card { padding: 14px; border-radius: 18px; }
-      #card-status { display: none; }
       .quick-label { margin-bottom: 6px; font-size: 11px; }
-      .quick-value { font-size: 20px; }
+      .quick-value { font-size: 18px; }
       .quick-sub { margin-top: 6px; font-size: 11px; line-height: 1.4; }
+      .elevation-visual {
+        padding: 14px;
+        margin-bottom: 12px;
+      }
+      .elevation-visual-head { margin-bottom: 10px; }
+      .elevation-visual-title { font-size: 13px; }
+      .elevation-visual-photo { max-height: 200px; border-radius: 16px; }
       .meeting-card,
       .panel { padding: 18px; border-radius: 24px; }
       .section-kicker { margin-bottom: 6px; }
@@ -435,8 +516,9 @@
       .section-desc { margin-top: 8px; font-size: 13px; line-height: 1.65; }
       .meeting-grid,
       .meeting-meta { display: none; }
-      .map-links { gap: 8px; margin-top: 12px; }
-      .map-link { min-height: 36px; padding: 0 12px; font-size: 12px; }
+      .map-links { grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+      .map-card { min-height: auto; padding: 13px; border-radius: 16px; }
+      .map-card em { margin-top: 10px; }
       .panel-list { margin-top: 12px; gap: 10px; }
       .panel-inline { margin-top: 12px; gap: 6px; }
       .meeting-box,
@@ -445,6 +527,14 @@
       .meeting-box strong { margin-bottom: 4px; font-size: 14px; }
       .panel-item span,
       .meeting-box span { font-size: 12px; line-height: 1.6; }
+      .itinerary-stop {
+        grid-template-columns: 72px 1fr;
+        gap: 8px;
+        padding: 10px 0;
+      }
+      .itinerary-time { font-size: 11px; }
+      .itinerary-copy,
+      .itinerary-note { font-size: 12px; line-height: 1.65; }
       .gallery-grid { grid-template-columns: 1fr; }
       .gallery-photo { height: 180px; }
       .tabbar {
@@ -476,7 +566,8 @@
     }
     @media (max-width: 520px) {
       .mobile-brief-grid { grid-template-columns: 1fr; }
-      .hero-title { font-size: 34px; }
+      .quick-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .hero-title { font-size: 30px; }
       .section-title { font-size: 22px; }
     }
   </style>
@@ -505,10 +596,6 @@
 
     <section class="mobile-brief glass">
       <div class="mobile-brief-grid">
-        <div class="mobile-brief-item" id="mobile-box-status">
-          <strong>当前状态</strong>
-          <span id="mobile-status">报名中</span>
-        </div>
         <div class="mobile-brief-item" id="mobile-box-time">
           <strong>集合时间</strong>
           <span id="mobile-meeting-time">08:30 AM</span>
@@ -517,13 +604,9 @@
           <strong>集合点</strong>
           <span id="mobile-meeting-place">德清高铁站 2 号口 · 到站后统一上车</span>
         </div>
-        <div class="mobile-brief-item" id="mobile-box-drive">
-          <strong>预计车程</strong>
-          <span id="mobile-drive-time">待填写</span>
-        </div>
-        <div class="mobile-brief-item" id="mobile-box-service">
-          <strong>服务区</strong>
-          <span id="mobile-service-area">待填写</span>
+        <div class="mobile-brief-item wide" id="mobile-box-transport">
+          <strong>预计车程 / 服务区</strong>
+          <span id="mobile-transport-note">待填写</span>
         </div>
       </div>
     </section>
@@ -544,11 +627,14 @@
         <p class="quick-value" id="weekly-elevation">800m+</p>
         <div class="quick-sub" id="weekly-elevation-label">缓升为主</div>
       </div>
-      <div class="quick-card glass" id="card-status">
-        <p class="quick-label">状态</p>
-        <p class="quick-value" id="weekly-status" style="color: var(--caramel);">报名中</p>
-        <div class="quick-sub" id="weekly-status-label">余位可报</div>
+    </section>
+
+    <section class="elevation-visual glass" id="elevation-visual">
+      <div class="elevation-visual-head">
+        <h3 class="elevation-visual-title">海拔渲染图</h3>
+        <span class="elevation-visual-note">出发前先看爬升走势</span>
       </div>
+      <img class="elevation-visual-photo" id="elevation-visual-photo" alt="海拔渲染图">
     </section>
 
     <section class="meeting-card glass">
@@ -566,13 +652,9 @@
         </div>
       </div>
       <div class="meeting-meta">
-        <div class="meeting-box" id="box-drive-time">
-          <strong>预计车程</strong>
-          <span id="drive-time">待填写</span>
-        </div>
-        <div class="meeting-box" id="box-service-area">
-          <strong>停留服务区</strong>
-          <span id="service-area">待填写</span>
+        <div class="meeting-box" id="box-drive-service">
+          <strong>预计车程 / 服务区</strong>
+          <span id="drive-service">待填写</span>
         </div>
       </div>
       <div class="map-links" id="weekly-map-links"></div>
@@ -585,7 +667,7 @@
       <div class="panel-list" id="itinerary-wrap" style="display:none">
         <div class="panel-item">
           <strong>行程安排</strong>
-          <span id="weekly-itinerary" style="white-space: pre-line;"></span>
+          <div class="itinerary-flow" id="weekly-itinerary"></div>
         </div>
       </div>
       <div class="panel-list" id="route-items"></div>
@@ -649,6 +731,36 @@
       `).join("");
     }
 
+    function renderItinerary(containerId, text) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const raw = String(text || "").trim();
+      if (!raw) {
+        el.innerHTML = "";
+        return;
+      }
+
+      const normalized = raw
+        .replace(/\r\n/g, "\n")
+        .replace(/([^\n])((?:约)?(?:凌晨|早上|上午|中午|下午|傍晚|晚上)?\s*\d{1,2}[:：]\d{2}(?:-\d{1,2}[:：]\d{2})?)/g, "$1\n$2");
+
+      const lines = normalized
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean);
+
+      el.innerHTML = lines.map(line => {
+        if (/^第[一二三四五六七八九十0-9]+天[:：]/.test(line)) {
+          return `<div class="itinerary-day">${line}</div>`;
+        }
+        const match = line.match(/^((?:约)?(?:凌晨|早上|上午|中午|下午|傍晚|晚上)?\s*\d{1,2}[:：]\d{2}(?:-\d{1,2}[:：]\d{2})?)(.*)$/);
+        if (match) {
+          return `<div class="itinerary-stop"><div class="itinerary-time">${match[1].trim()}</div><div class="itinerary-copy">${match[2].trim() || "待补充"}</div></div>`;
+        }
+        return `<div class="itinerary-note">${line}</div>`;
+      }).join("");
+    }
+
     loadSiteData().then(data => {
       const weeklySceneryRoute = (data.routeLibrary.routes || []).find(route => route.name === data.site.title) || data.routeLibrary.routes[0];
       document.getElementById("site-kicker").textContent = data.site.kicker;
@@ -662,17 +774,13 @@
       document.getElementById("weekly-mileage-label").textContent = data.weekly.mileage_label;
       document.getElementById("weekly-elevation").textContent = data.weekly.elevation;
       document.getElementById("weekly-elevation-label").textContent = data.weekly.elevation_label;
-      document.getElementById("weekly-status").textContent = data.weekly.status;
-      document.getElementById("weekly-status-label").textContent = data.weekly.status_label;
       document.getElementById("meeting-place").textContent = data.weekly.meeting_place;
       document.getElementById("meeting-time").textContent = data.weekly.meeting_time;
-      document.getElementById("drive-time").textContent = data.weekly.drive_time || "";
-      document.getElementById("service-area").textContent = data.weekly.service_area || "";
-      document.getElementById("mobile-status").textContent = data.weekly.status || "待确认";
+      const transportNote = [data.weekly.drive_time, data.weekly.service_area].filter(Boolean).join(" · ");
+      document.getElementById("drive-service").textContent = transportNote || "待填写";
       document.getElementById("mobile-meeting-place").textContent = data.weekly.meeting_place || "待填写";
       document.getElementById("mobile-meeting-time").textContent = data.weekly.meeting_time || "待填写";
-      document.getElementById("mobile-drive-time").textContent = data.weekly.drive_time || "待填写";
-      document.getElementById("mobile-service-area").textContent = data.weekly.service_area || "待填写";
+      document.getElementById("mobile-transport-note").textContent = transportNote || "待填写";
       document.getElementById("meeting-desc").textContent = data.weekly.route_brief;
       document.getElementById("route-brief").textContent = data.weekly.route_brief;
 
@@ -684,19 +792,24 @@
       toggleBlock("card-difficulty", data.weekly.difficulty);
       toggleBlock("card-mileage", data.weekly.mileage);
       toggleBlock("card-elevation", data.weekly.elevation);
-      toggleBlock("card-status", data.weekly.status);
       toggleBlock("box-meeting-place", data.weekly.meeting_place);
       toggleBlock("box-meeting-time", data.weekly.meeting_time);
-      toggleBlock("box-drive-time", data.weekly.drive_time);
-      toggleBlock("box-service-area", data.weekly.service_area);
-      toggleBlock("mobile-box-status", data.weekly.status);
+      toggleBlock("box-drive-service", transportNote);
       toggleBlock("mobile-box-time", data.weekly.meeting_time);
       toggleBlock("mobile-box-place", data.weekly.meeting_place);
-      toggleBlock("mobile-box-drive", data.weekly.drive_time);
-      toggleBlock("mobile-box-service", data.weekly.service_area);
+      toggleBlock("mobile-box-transport", transportNote);
+
+      const elevationVisual = data.weekly.elevation_profile_image || "";
+      toggleBlock("elevation-visual", elevationVisual);
+      if (elevationVisual) {
+        document.getElementById("elevation-visual").classList.add("show");
+        document.getElementById("elevation-visual-photo").src = elevationVisual;
+      } else {
+        document.getElementById("elevation-visual").classList.remove("show");
+      }
 
       if (data.weekly.itinerary) {
-        document.getElementById("weekly-itinerary").textContent = data.weekly.itinerary;
+        renderItinerary("weekly-itinerary", data.weekly.itinerary);
         document.getElementById("itinerary-wrap").style.display = "";
       }
 
@@ -704,9 +817,9 @@
       const renderMapEntry = (label, value) => {
         if (!value) return "";
         if (isLikelyUrl(value)) {
-          return `<a class="map-link" href="${value}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+          return `<a class="map-card link" href="${value}" target="_blank" rel="noopener noreferrer"><strong>${label}</strong><span>点击打开轨迹或路线图，建议出发前先收藏。</span><em>打开链接</em></a>`;
         }
-        return `<div class="map-note"><strong>${label}</strong><span>${value}</span></div>`;
+        return `<div class="map-card"><strong>${label}</strong><span>${value}</span></div>`;
       };
 
       const weeklyMapLinks = [];
