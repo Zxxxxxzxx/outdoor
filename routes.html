@@ -292,6 +292,230 @@
       color: var(--muted);
       font-size: 13px;
     }
+    .admin-fab {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 40;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 999px;
+      background: var(--caramel);
+      color: #fff9f3;
+      box-shadow: 0 16px 34px rgba(184, 116, 63, 0.24);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .admin-status {
+      position: fixed;
+      right: 16px;
+      bottom: 74px;
+      z-index: 40;
+      width: min(360px, calc(100vw - 32px));
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(255,255,255,0.84);
+      box-shadow: var(--shadow);
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .admin-status[data-tone="error"] {
+      color: #9a3f33;
+      border-color: rgba(180, 91, 79, 0.22);
+      background: rgba(255, 247, 245, 0.94);
+    }
+    .admin-status[data-tone="success"] {
+      color: #2f6450;
+      border-color: rgba(78, 139, 108, 0.18);
+      background: rgba(245, 252, 248, 0.94);
+    }
+    .admin-overlay[hidden] { display: none; }
+    .admin-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      padding: 18px 14px 24px;
+      background: rgba(37, 48, 45, 0.2);
+      overflow-y: auto;
+    }
+    .admin-modal {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.84);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 28px 70px rgba(37, 48, 45, 0.16);
+    }
+    .admin-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .admin-kicker {
+      margin: 0 0 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--caramel);
+      font-weight: 800;
+    }
+    .admin-title {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 36px);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      font-weight: 800;
+    }
+    .admin-desc {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 56ch;
+    }
+    .admin-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .admin-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .admin-field.full { grid-column: 1 / -1; }
+    .admin-field label,
+    .admin-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .admin-field input,
+    .admin-field textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.78);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.74);
+      color: var(--ink);
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 14px;
+    }
+    .admin-field textarea {
+      min-height: 108px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+    .admin-section {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.72);
+    }
+    .admin-gallery-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
+    }
+    .admin-gallery-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.58);
+      border: 1px solid rgba(255,255,255,0.78);
+    }
+    .admin-gallery-thumb {
+      width: 120px;
+      height: 90px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: rgba(245,243,238,0.92);
+    }
+    .admin-gallery-meta {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .admin-gallery-empty {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.52);
+      border: 1px dashed rgba(184, 116, 63, 0.18);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .admin-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .admin-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .admin-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .admin-btn.primary {
+      background: var(--caramel);
+      color: #fffaf4;
+    }
+    .admin-btn.ghost {
+      background: rgba(255,255,255,0.56);
+      border-color: var(--line);
+      color: var(--ink);
+    }
+    .admin-btn.danger {
+      background: rgba(180, 91, 79, 0.1);
+      border-color: rgba(180, 91, 79, 0.16);
+      color: #a14d40;
+    }
+    .admin-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .admin-check input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+    }
     @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
     @media (max-width: 620px) {
       body { padding: 18px 12px 30px; }
@@ -299,6 +523,20 @@
       .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .detail-head { flex-direction: column; }
       .gallery-grid { grid-template-columns: 1fr; }
+      .admin-form { grid-template-columns: 1fr; }
+      .admin-gallery-item { grid-template-columns: 1fr; }
+      .admin-gallery-thumb { width: 100%; height: 180px; }
+      .admin-fab {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        width: auto;
+      }
+      .admin-status {
+        right: 12px;
+        left: 12px;
+        width: auto;
+      }
     }
   </style>
 </head>
@@ -389,11 +627,253 @@
     </div>
   </div>
 
+  <button class="admin-fab" id="admin-fab" type="button" style="display:none">管理员编辑当前线路</button>
+  <div class="admin-status" id="admin-status" style="display:none"></div>
+
+  <div class="admin-overlay" id="admin-overlay" hidden>
+    <div class="admin-modal">
+      <div class="admin-head">
+        <div>
+          <p class="admin-kicker">Route Admin</p>
+          <h3 class="admin-title" id="admin-route-title">编辑当前线路</h3>
+          <p class="admin-desc">你可以直接在正式站修改当前这条线路，然后提交到 GitHub。Cloudflare Pages 会自动重新部署。</p>
+        </div>
+        <button class="admin-btn ghost" id="admin-close-btn" type="button">关闭</button>
+      </div>
+
+      <div class="admin-form">
+        <div class="admin-field">
+          <label for="admin-route-name">线路名</label>
+          <input id="admin-route-name" type="text">
+        </div>
+        <div class="admin-field">
+          <label for="admin-route-region">地区</label>
+          <input id="admin-route-region" type="text">
+        </div>
+        <div class="admin-field">
+          <label for="admin-route-difficulty">难度</label>
+          <input id="admin-route-difficulty" type="text">
+        </div>
+        <div class="admin-field">
+          <label for="admin-route-drive-time">车程时间+服务区休息时间</label>
+          <input id="admin-route-drive-time" type="text">
+        </div>
+        <div class="admin-field">
+          <label for="admin-route-estimated-time">预估时间</label>
+          <input id="admin-route-estimated-time" type="text">
+        </div>
+        <div class="admin-field">
+          <label for="admin-route-suitable">适合人群</label>
+          <input id="admin-route-suitable" type="text">
+        </div>
+        <div class="admin-field full">
+          <label for="admin-route-weather">天气规则</label>
+          <textarea id="admin-route-weather"></textarea>
+        </div>
+        <div class="admin-field full">
+          <label for="admin-route-prep">行前功课，每行一条</label>
+          <textarea id="admin-route-prep"></textarea>
+        </div>
+        <div class="admin-field full">
+          <label for="admin-route-risks">线路风险，每行一条</label>
+          <textarea id="admin-route-risks"></textarea>
+        </div>
+        <div class="admin-field full">
+          <label for="admin-route-animals">常见动物 / 虫子，每行一条</label>
+          <textarea id="admin-route-animals"></textarea>
+        </div>
+        <div class="admin-field full">
+          <label for="admin-route-review-summary">领队复盘摘要</label>
+          <textarea id="admin-route-review-summary"></textarea>
+        </div>
+        <div class="admin-field full">
+          <label for="admin-route-review-notes">领队复盘要点，每行一条</label>
+          <textarea id="admin-route-review-notes"></textarea>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-subtitle">线路实景图片</div>
+        <div class="admin-inline">
+          <input id="admin-gallery-upload" type="file" accept="image/*" multiple>
+        </div>
+        <p class="admin-note">支持手机直接选图。图片会在浏览器里压缩后写进 `site.json`，建议单次上传 1 到 4 张。</p>
+        <div class="admin-gallery-list" id="admin-gallery-list"></div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-subtitle">GitHub 发布设置</div>
+        <div class="admin-form">
+          <div class="admin-field">
+            <label for="admin-gh-owner">仓库 Owner</label>
+            <input id="admin-gh-owner" type="text" autocomplete="off">
+          </div>
+          <div class="admin-field">
+            <label for="admin-gh-repo">仓库名</label>
+            <input id="admin-gh-repo" type="text" autocomplete="off">
+          </div>
+          <div class="admin-field">
+            <label for="admin-gh-branch">分支</label>
+            <input id="admin-gh-branch" type="text" autocomplete="off">
+          </div>
+          <div class="admin-field">
+            <label for="admin-gh-path">文件路径</label>
+            <input id="admin-gh-path" type="text" autocomplete="off">
+          </div>
+          <div class="admin-field full">
+            <label for="admin-gh-token">GitHub Token</label>
+            <input id="admin-gh-token" type="password" autocomplete="off" placeholder="需要 repo contents 写权限">
+          </div>
+        </div>
+        <div class="admin-inline">
+          <label class="admin-check">
+            <input id="admin-gh-remember-token" type="checkbox">
+            记住 token 到当前浏览器
+          </label>
+        </div>
+        <p class="admin-note">建议使用 Fine-grained Personal Access Token，至少给这个仓库的 Contents: Read and write 权限。</p>
+        <div class="admin-actions">
+          <button class="admin-btn ghost" id="admin-save-settings-btn" type="button">保存设置到本机</button>
+          <button class="admin-btn danger" id="admin-clear-token-btn" type="button">清空本机 token</button>
+          <button class="admin-btn ghost" id="admin-disable-btn" type="button">关闭管理模式</button>
+        </div>
+      </div>
+
+      <div class="admin-actions">
+        <button class="admin-btn ghost" id="admin-preview-btn" type="button">先更新当前页预览</button>
+        <button class="admin-btn primary" id="admin-publish-btn" type="button">保存并发布到公网</button>
+      </div>
+    </div>
+  </div>
+
   <script src="./assets/site.js"></script>
   <script>
+    const ADMIN_FLAG_KEY = "huadong_routes_admin_enabled";
+    const ADMIN_SETTINGS_KEY = "huadong_routes_github_settings_v1";
+    const ADMIN_DEFAULT_SETTINGS = {
+      owner: "Zxxxxxzxx",
+      repo: "outdoor",
+      branch: "main",
+      path: "data/site.json",
+      token: "",
+      rememberToken: false,
+    };
+
+    let siteData = null;
     let routes = [];
     let activeRegion = "全部";
     let activeRouteId = "";
+    let adminDraft = null;
+
+    const adminFab = document.getElementById("admin-fab");
+    const adminOverlay = document.getElementById("admin-overlay");
+    const adminStatus = document.getElementById("admin-status");
+
+    (function initAdminModeFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin") === "1") {
+        localStorage.setItem(ADMIN_FLAG_KEY, "1");
+      } else if (params.get("admin") === "0") {
+        localStorage.removeItem(ADMIN_FLAG_KEY);
+      }
+    })();
+
+    function cloneValue(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function isAdminEnabled() {
+      return localStorage.getItem(ADMIN_FLAG_KEY) === "1";
+    }
+
+    function setAdminStatus(text, tone = "neutral") {
+      if (!text) {
+        adminStatus.style.display = "none";
+        adminStatus.textContent = "";
+        adminStatus.dataset.tone = "";
+        return;
+      }
+      adminStatus.style.display = "";
+      adminStatus.textContent = text;
+      adminStatus.dataset.tone = tone;
+    }
+
+    function updateAdminEntry() {
+      adminFab.style.display = isAdminEnabled() ? "" : "none";
+    }
+
+    function getActiveRoute() {
+      return routes.find(item => item.id === activeRouteId) || routes[0] || null;
+    }
+
+    function textLines(value) {
+      return (value || []).join("\n");
+    }
+
+    function parseLines(value) {
+      return String(value || "")
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean);
+    }
+
+    function readAdminSettings() {
+      try {
+        const raw = localStorage.getItem(ADMIN_SETTINGS_KEY);
+        if (!raw) return { ...ADMIN_DEFAULT_SETTINGS };
+        const parsed = JSON.parse(raw);
+        return {
+          ...ADMIN_DEFAULT_SETTINGS,
+          ...(parsed && typeof parsed === "object" ? parsed : {}),
+        };
+      } catch (err) {
+        console.warn("读取管理员设置失败", err);
+        return { ...ADMIN_DEFAULT_SETTINGS };
+      }
+    }
+
+    function writeAdminSettings(settings) {
+      localStorage.setItem(ADMIN_SETTINGS_KEY, JSON.stringify(settings));
+    }
+
+    function fillAdminSettingsForm() {
+      const settings = readAdminSettings();
+      document.getElementById("admin-gh-owner").value = settings.owner || "";
+      document.getElementById("admin-gh-repo").value = settings.repo || "";
+      document.getElementById("admin-gh-branch").value = settings.branch || "";
+      document.getElementById("admin-gh-path").value = settings.path || "";
+      document.getElementById("admin-gh-token").value = settings.token || "";
+      document.getElementById("admin-gh-remember-token").checked = Boolean(settings.rememberToken);
+    }
+
+    function collectAdminSettingsFromForm() {
+      return {
+        owner: document.getElementById("admin-gh-owner").value.trim(),
+        repo: document.getElementById("admin-gh-repo").value.trim(),
+        branch: document.getElementById("admin-gh-branch").value.trim() || "main",
+        path: document.getElementById("admin-gh-path").value.trim() || "data/site.json",
+        token: document.getElementById("admin-gh-token").value.trim(),
+        rememberToken: document.getElementById("admin-gh-remember-token").checked,
+      };
+    }
+
+    function persistAdminSettings() {
+      const settings = collectAdminSettingsFromForm();
+      writeAdminSettings({
+        ...settings,
+        token: settings.rememberToken ? settings.token : "",
+      });
+      setAdminStatus("GitHub 设置已保存到当前浏览器。", "success");
+    }
+
+    function clearStoredToken() {
+      const settings = readAdminSettings();
+      settings.token = "";
+      settings.rememberToken = false;
+      writeAdminSettings(settings);
+      fillAdminSettingsForm();
+      setAdminStatus("已清空当前浏览器里保存的 GitHub token。", "success");
+    }
 
     function getVisibleRoutes() {
       if (activeRegion === "全部") return routes;
@@ -452,6 +932,240 @@
       `).join("");
     }
 
+    function openAdminModal() {
+      const route = getActiveRoute();
+      if (!route) {
+        setAdminStatus("当前没有可编辑的线路。", "error");
+        return;
+      }
+      adminDraft = cloneValue(route);
+      document.getElementById("admin-route-title").textContent = `编辑 ${route.name || "当前线路"}`;
+      document.getElementById("admin-route-name").value = adminDraft.name || "";
+      document.getElementById("admin-route-region").value = adminDraft.region || "";
+      document.getElementById("admin-route-difficulty").value = adminDraft.difficulty || "";
+      document.getElementById("admin-route-drive-time").value = adminDraft.drive_time || "";
+      document.getElementById("admin-route-estimated-time").value = adminDraft.estimated_time || adminDraft.duration || "";
+      document.getElementById("admin-route-suitable").value = adminDraft.suitable || "";
+      document.getElementById("admin-route-weather").value = adminDraft.weather_rule || "";
+      document.getElementById("admin-route-prep").value = textLines(adminDraft.prep);
+      document.getElementById("admin-route-risks").value = textLines(adminDraft.risks);
+      document.getElementById("admin-route-animals").value = textLines(adminDraft.animals);
+      document.getElementById("admin-route-review-summary").value = (adminDraft.review && adminDraft.review.summary) || "";
+      document.getElementById("admin-route-review-notes").value = textLines(adminDraft.review && adminDraft.review.notes);
+      document.getElementById("admin-gallery-upload").value = "";
+      fillAdminSettingsForm();
+      renderAdminGallery();
+      adminOverlay.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeAdminModal() {
+      adminOverlay.hidden = true;
+      document.body.style.overflow = "";
+      adminDraft = null;
+    }
+
+    function renderAdminGallery() {
+      const el = document.getElementById("admin-gallery-list");
+      if (!adminDraft || !adminDraft.gallery || !adminDraft.gallery.length) {
+        el.innerHTML = `<div class="admin-gallery-empty">当前这条线路还没有图片。可以直接从手机上传。</div>`;
+        return;
+      }
+      el.innerHTML = adminDraft.gallery.map((item, index) => `
+        <div class="admin-gallery-item" data-index="${index}">
+          <img class="admin-gallery-thumb" src="${item.src}" alt="${item.caption || adminDraft.name || "线路图片"}">
+          <div class="admin-gallery-meta">
+            <input class="admin-gallery-caption" type="text" value="${item.caption || ""}" placeholder="图片说明，比如：林道入口、视野点、溪谷路段">
+            <button class="admin-btn danger admin-gallery-remove" type="button" data-index="${index}">删除这张</button>
+          </div>
+        </div>
+      `).join("");
+
+      [...el.querySelectorAll(".admin-gallery-caption")].forEach((input, index) => {
+        input.addEventListener("change", event => {
+          if (!adminDraft || !adminDraft.gallery[index]) return;
+          adminDraft.gallery[index].caption = event.target.value.trim();
+        });
+      });
+
+      [...el.querySelectorAll(".admin-gallery-remove")].forEach(button => {
+        button.addEventListener("click", () => {
+          if (!adminDraft) return;
+          adminDraft.gallery.splice(Number(button.dataset.index), 1);
+          renderAdminGallery();
+          setAdminStatus("已从草稿里删除这张图片。", "success");
+        });
+      });
+    }
+
+    function syncAdminDraftFromForm() {
+      if (!adminDraft) return null;
+      adminDraft = normalizeRoute({
+        ...adminDraft,
+        name: document.getElementById("admin-route-name").value.trim(),
+        region: document.getElementById("admin-route-region").value.trim(),
+        difficulty: document.getElementById("admin-route-difficulty").value.trim(),
+        drive_time: document.getElementById("admin-route-drive-time").value.trim(),
+        estimated_time: document.getElementById("admin-route-estimated-time").value.trim(),
+        duration: document.getElementById("admin-route-estimated-time").value.trim(),
+        suitable: document.getElementById("admin-route-suitable").value.trim(),
+        weather_rule: document.getElementById("admin-route-weather").value.trim(),
+        prep: parseLines(document.getElementById("admin-route-prep").value),
+        risks: parseLines(document.getElementById("admin-route-risks").value),
+        animals: parseLines(document.getElementById("admin-route-animals").value),
+        review: {
+          ...(adminDraft.review || {}),
+          summary: document.getElementById("admin-route-review-summary").value.trim(),
+          notes: parseLines(document.getElementById("admin-route-review-notes").value),
+        },
+        gallery: adminDraft.gallery || [],
+      });
+      return adminDraft;
+    }
+
+    function applyAdminDraftToPage() {
+      const route = getActiveRoute();
+      const draft = syncAdminDraftFromForm();
+      if (!route || !draft || !siteData) return null;
+
+      const index = siteData.routeLibrary.routes.findIndex(item => item.id === route.id);
+      if (index === -1) return null;
+
+      siteData.routeLibrary.routes[index] = draft;
+      siteData = normalizeSiteData(siteData);
+      routes = siteData.routeLibrary.routes || [];
+      activeRouteId = draft.id;
+
+      if (activeRegion !== "全部" && !getVisibleRoutes().find(item => item.id === activeRouteId)) {
+        activeRegion = "全部";
+      }
+
+      document.getElementById("route-library-intro").textContent = siteData.routeLibrary.intro || "";
+      renderFilters();
+      renderRouteList();
+      renderDetail();
+      return draft;
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("读取图片失败"));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error("图片解析失败"));
+        img.src = src;
+      });
+    }
+
+    async function compressImage(file) {
+      const src = await fileToDataUrl(file);
+      const img = await loadImage(src);
+      const limit = 1600;
+      const scale = Math.min(1, limit / Math.max(img.naturalWidth, img.naturalHeight));
+      const width = Math.max(1, Math.round(img.naturalWidth * scale));
+      const height = Math.max(1, Math.round(img.naturalHeight * scale));
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      return canvas.toDataURL("image/jpeg", 0.82);
+    }
+
+    function encodeGithubPath(path) {
+      return String(path || "")
+        .split("/")
+        .map(part => encodeURIComponent(part))
+        .join("/");
+    }
+
+    function encodeBase64Utf8(text) {
+      const bytes = new TextEncoder().encode(text);
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        const chunk = bytes.subarray(i, i + chunkSize);
+        binary += String.fromCharCode.apply(null, Array.from(chunk));
+      }
+      return btoa(binary);
+    }
+
+    async function publishAdminChanges() {
+      const draft = applyAdminDraftToPage();
+      if (!draft || !siteData) {
+        setAdminStatus("当前没有可发布的线路变更。", "error");
+        return;
+      }
+
+      const settings = collectAdminSettingsFromForm();
+      if (!settings.owner || !settings.repo || !settings.branch || !settings.path) {
+        setAdminStatus("先把 GitHub 仓库设置补完整。", "error");
+        return;
+      }
+      if (!settings.token) {
+        setAdminStatus("先填 GitHub token，再保存到公网。", "error");
+        return;
+      }
+
+      if (settings.rememberToken) {
+        writeAdminSettings(settings);
+      } else {
+        writeAdminSettings({ ...settings, token: "" });
+      }
+
+      const apiPath = encodeGithubPath(settings.path);
+      const url = `https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${apiPath}?ref=${encodeURIComponent(settings.branch)}`;
+
+      setAdminStatus("正在提交到 GitHub，稍后 Cloudflare Pages 会自动部署。");
+
+      try {
+        const commonHeaders = {
+          "Accept": "application/vnd.github+json",
+          "Authorization": `Bearer ${settings.token}`,
+        };
+
+        const currentResp = await fetch(url, { headers: commonHeaders });
+        const current = await currentResp.json();
+        if (!currentResp.ok) {
+          throw new Error(current.message || "读取 GitHub 文件失败");
+        }
+
+        const payload = {
+          message: `update route ${draft.name || draft.id} via web admin`,
+          content: encodeBase64Utf8(`${JSON.stringify(normalizeSiteData(siteData), null, 2)}\n`),
+          sha: current.sha,
+          branch: settings.branch,
+        };
+
+        const updateResp = await fetch(`https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${apiPath}`, {
+          method: "PUT",
+          headers: {
+            ...commonHeaders,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await updateResp.json();
+        if (!updateResp.ok) {
+          throw new Error(result.message || "提交 GitHub 失败");
+        }
+
+        closeAdminModal();
+        setAdminStatus("已提交到 GitHub。等 30 到 90 秒后刷新正式站，通常就能看到。", "success");
+      } catch (err) {
+        console.error(err);
+        setAdminStatus(`发布失败：${err.message || err}`, "error");
+      }
+    }
+
     function renderDetail() {
       const route = routes.find(item => item.id === activeRouteId) || routes[0];
       if (!route) return;
@@ -471,13 +1185,64 @@
       renderList("detail-review-notes", route.review.notes);
     }
 
+    adminFab.addEventListener("click", () => openAdminModal());
+    document.getElementById("admin-close-btn").addEventListener("click", () => closeAdminModal());
+    document.getElementById("admin-preview-btn").addEventListener("click", () => {
+      const draft = applyAdminDraftToPage();
+      if (!draft) {
+        setAdminStatus("预览更新失败，请先确认当前线路存在。", "error");
+        return;
+      }
+      setAdminStatus("当前页预览已更新，还没有推送到公网。", "success");
+    });
+    document.getElementById("admin-publish-btn").addEventListener("click", () => publishAdminChanges());
+    document.getElementById("admin-save-settings-btn").addEventListener("click", () => persistAdminSettings());
+    document.getElementById("admin-clear-token-btn").addEventListener("click", () => clearStoredToken());
+    document.getElementById("admin-disable-btn").addEventListener("click", () => {
+      localStorage.removeItem(ADMIN_FLAG_KEY);
+      updateAdminEntry();
+      closeAdminModal();
+      setAdminStatus("已关闭这个浏览器里的管理模式。想再打开时，在网址后面加 `?admin=1`。", "success");
+    });
+    adminOverlay.addEventListener("click", event => {
+      if (event.target === adminOverlay) closeAdminModal();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !adminOverlay.hidden) closeAdminModal();
+    });
+    document.getElementById("admin-gallery-upload").addEventListener("change", async event => {
+      if (!adminDraft) return;
+      const files = [...(event.target.files || [])];
+      if (!files.length) return;
+      setAdminStatus("正在压缩图片，请稍等。");
+      try {
+        for (const file of files) {
+          const src = await compressImage(file);
+          adminDraft.gallery.push({
+            id: `gallery_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+            src,
+            caption: String(file.name || "线路实景").replace(/\.[^.]+$/, ""),
+          });
+        }
+        renderAdminGallery();
+        setAdminStatus("图片已经加入当前草稿。记得点“保存并发布到公网”。", "success");
+      } catch (err) {
+        console.error(err);
+        setAdminStatus(`图片处理失败：${err.message || err}`, "error");
+      } finally {
+        event.target.value = "";
+      }
+    });
+
     loadSiteData().then(data => {
-      routes = data.routeLibrary.routes || [];
+      siteData = normalizeSiteData(data);
+      routes = siteData.routeLibrary.routes || [];
       activeRouteId = routes[0] ? routes[0].id : "";
-      document.getElementById("route-library-intro").textContent = data.routeLibrary.intro || "";
+      document.getElementById("route-library-intro").textContent = siteData.routeLibrary.intro || "";
       renderFilters();
       renderRouteList();
       renderDetail();
+      updateAdminEntry();
     }).catch(err => {
       console.error(err);
       document.body.innerHTML = "<div style='padding:40px;font-family:Inter,sans-serif;color:#25302d'>读取线路数据失败，请检查 data/site.json 是否存在。</div>";
