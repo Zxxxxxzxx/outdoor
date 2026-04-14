@@ -476,6 +476,40 @@
       gap: 10px;
       margin-top: 18px;
     }
+    .admin-share {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.56);
+      border: 1px solid rgba(255,255,255,0.78);
+    }
+    .admin-share-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .admin-share-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.62);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+    .admin-share-meta strong {
+      display: block;
+      font-size: 14px;
+      letter-spacing: -0.02em;
+    }
+    .admin-share-meta span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      word-break: break-all;
+    }
     .admin-btn {
       display: inline-flex;
       align-items: center;
@@ -526,6 +560,7 @@
       .admin-form { grid-template-columns: 1fr; }
       .admin-gallery-item { grid-template-columns: 1fr; }
       .admin-gallery-thumb { width: 100%; height: 180px; }
+      .admin-share-item { grid-template-columns: 1fr; }
       .admin-fab {
         right: 12px;
         bottom: 12px;
@@ -733,6 +768,7 @@
         </div>
         <p class="admin-note">建议使用 Fine-grained Personal Access Token，至少给这个仓库的 Contents: Read and write 权限。</p>
         <div class="admin-actions">
+          <button class="admin-btn ghost" id="admin-open-token-btn" type="button">打开 GitHub Token 页面</button>
           <button class="admin-btn ghost" id="admin-save-settings-btn" type="button">保存设置到本机</button>
           <button class="admin-btn danger" id="admin-clear-token-btn" type="button">清空本机 token</button>
           <button class="admin-btn ghost" id="admin-disable-btn" type="button">关闭管理模式</button>
@@ -742,6 +778,29 @@
       <div class="admin-actions">
         <button class="admin-btn ghost" id="admin-preview-btn" type="button">先更新当前页预览</button>
         <button class="admin-btn primary" id="admin-publish-btn" type="button">保存并发布到公网</button>
+      </div>
+
+      <div class="admin-share">
+        <div class="admin-subtitle">队员查看链接</div>
+        <p class="admin-note">放在最底部，编辑完以后可以直接复制发给队员。</p>
+        <div class="admin-share-list">
+          <div class="admin-share-item">
+            <div class="admin-share-meta">
+              <strong>队员首页</strong>
+              <span id="viewer-home-link"></span>
+            </div>
+            <a class="admin-btn ghost" id="viewer-home-open" href="/" target="_blank" rel="noreferrer">打开</a>
+            <button class="admin-btn ghost" id="viewer-home-copy" type="button">复制</button>
+          </div>
+          <div class="admin-share-item">
+            <div class="admin-share-meta">
+              <strong>线路库链接</strong>
+              <span id="viewer-routes-link"></span>
+            </div>
+            <a class="admin-btn ghost" id="viewer-routes-open" href="/routes" target="_blank" rel="noreferrer">打开</a>
+            <button class="admin-btn ghost" id="viewer-routes-copy" type="button">复制</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -830,6 +889,51 @@
         console.warn("读取管理员设置失败", err);
         return { ...ADMIN_DEFAULT_SETTINGS };
       }
+    }
+
+    function getViewerHomeUrl() {
+      return `${window.location.origin}/`;
+    }
+
+    function getViewerRoutesUrl() {
+      return `${window.location.origin}/routes`;
+    }
+
+    function renderViewerLinks() {
+      const homeUrl = getViewerHomeUrl();
+      const routesUrl = getViewerRoutesUrl();
+      document.getElementById("viewer-home-link").textContent = homeUrl;
+      document.getElementById("viewer-home-open").href = homeUrl;
+      document.getElementById("viewer-routes-link").textContent = routesUrl;
+      document.getElementById("viewer-routes-open").href = routesUrl;
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return ok;
+      }
+    }
+
+    function openGithubTokenPage() {
+      const settings = collectAdminSettingsFromForm();
+      const owner = settings.owner || ADMIN_DEFAULT_SETTINGS.owner;
+      const name = encodeURIComponent("Huadong Route Web Admin");
+      const description = encodeURIComponent("Used to update data/site.json from the routes admin page");
+      const target = encodeURIComponent(owner);
+      const url = `https://github.com/settings/personal-access-tokens/new?name=${name}&description=${description}&target_name=${target}&expires_in=30&contents=write`;
+      window.open(url, "_blank", "noopener,noreferrer");
     }
 
     function writeAdminSettings(settings) {
@@ -1196,6 +1300,7 @@
       setAdminStatus("当前页预览已更新，还没有推送到公网。", "success");
     });
     document.getElementById("admin-publish-btn").addEventListener("click", () => publishAdminChanges());
+    document.getElementById("admin-open-token-btn").addEventListener("click", () => openGithubTokenPage());
     document.getElementById("admin-save-settings-btn").addEventListener("click", () => persistAdminSettings());
     document.getElementById("admin-clear-token-btn").addEventListener("click", () => clearStoredToken());
     document.getElementById("admin-disable-btn").addEventListener("click", () => {
@@ -1233,12 +1338,21 @@
         event.target.value = "";
       }
     });
+    document.getElementById("viewer-home-copy").addEventListener("click", async () => {
+      const ok = await copyText(getViewerHomeUrl());
+      setAdminStatus(ok ? "队员首页链接已复制。" : "复制失败，请手动复制。", ok ? "success" : "error");
+    });
+    document.getElementById("viewer-routes-copy").addEventListener("click", async () => {
+      const ok = await copyText(getViewerRoutesUrl());
+      setAdminStatus(ok ? "线路库链接已复制。" : "复制失败，请手动复制。", ok ? "success" : "error");
+    });
 
     loadSiteData().then(data => {
       siteData = normalizeSiteData(data);
       routes = siteData.routeLibrary.routes || [];
       activeRouteId = routes[0] ? routes[0].id : "";
       document.getElementById("route-library-intro").textContent = siteData.routeLibrary.intro || "";
+      renderViewerLinks();
       renderFilters();
       renderRouteList();
       renderDetail();
