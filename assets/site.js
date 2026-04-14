@@ -17,6 +17,7 @@ const DEPLOY_SITE_DEFAULTS = {
     status_label: "",
     meeting_place: "",
     meeting_time: "",
+    plate_number: "",
     drive_time: "",
     service_area: "",
     route_brief: "",
@@ -179,6 +180,7 @@ function normalizeSiteData(raw) {
   normalized.weekly.status_label = String(normalized.weekly.status_label || "").trim();
   normalized.weekly.meeting_place = String(normalized.weekly.meeting_place || "").trim();
   normalized.weekly.meeting_time = String(normalized.weekly.meeting_time || "").trim();
+  normalized.weekly.plate_number = String(normalized.weekly.plate_number || "").trim();
   normalized.weekly.drive_time = String(normalized.weekly.drive_time || "").trim();
   normalized.weekly.service_area = String(normalized.weekly.service_area || "").trim();
   normalized.weekly.route_brief = String(normalized.weekly.route_brief || "").trim();

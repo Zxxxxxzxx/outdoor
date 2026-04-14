@@ -759,6 +759,10 @@
         <div class="admin-subtitle">本周路线图</div>
         <div class="admin-form">
           <div class="admin-field full">
+            <label for="admin-weekly-plate-number">车牌号</label>
+            <input id="admin-weekly-plate-number" type="text" placeholder="例如：沪A12345 或 车牌待发">
+          </div>
+          <div class="admin-field full">
             <label for="admin-weekly-route-map-url">正常路线图</label>
             <input id="admin-weekly-route-map-url" type="text" placeholder="推荐填两步路 / 高德 / 户外轨迹链接">
           </div>
@@ -1108,6 +1112,7 @@
       document.getElementById("admin-route-animals").value = textLines(adminDraft.animals);
       document.getElementById("admin-route-review-summary").value = (adminDraft.review && adminDraft.review.summary) || "";
       document.getElementById("admin-route-review-notes").value = textLines(adminDraft.review && adminDraft.review.notes);
+      document.getElementById("admin-weekly-plate-number").value = (siteData && siteData.weekly && siteData.weekly.plate_number) || "";
       document.getElementById("admin-weekly-route-map-url").value = (siteData && siteData.weekly && siteData.weekly.route_map_url) || "";
       document.getElementById("admin-weekly-retreat-map-url").value = (siteData && siteData.weekly && siteData.weekly.retreat_map_url) || "";
       document.getElementById("admin-weekly-backup-map-url").value = (siteData && siteData.weekly && siteData.weekly.backup_map_url) || "";
@@ -1217,6 +1222,7 @@
       if (index === -1) return null;
 
       siteData.routeLibrary.routes[index] = draft;
+      siteData.weekly.plate_number = document.getElementById("admin-weekly-plate-number").value.trim();
       siteData.weekly.route_map_url = document.getElementById("admin-weekly-route-map-url").value.trim();
       siteData.weekly.retreat_map_url = document.getElementById("admin-weekly-retreat-map-url").value.trim();
       siteData.weekly.backup_map_url = document.getElementById("admin-weekly-backup-map-url").value.trim();

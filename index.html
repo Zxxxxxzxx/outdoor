@@ -316,7 +316,7 @@
     }
     .meeting-meta {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       margin-top: 12px;
     }
@@ -608,6 +608,10 @@
           <strong>预计车程 / 服务区</strong>
           <span id="mobile-transport-note">待填写</span>
         </div>
+        <div class="mobile-brief-item wide" id="mobile-box-plate">
+          <strong>车牌号</strong>
+          <span id="mobile-plate-number">待填写</span>
+        </div>
       </div>
     </section>
 
@@ -655,6 +659,10 @@
         <div class="meeting-box" id="box-drive-service">
           <strong>预计车程 / 服务区</strong>
           <span id="drive-service">待填写</span>
+        </div>
+        <div class="meeting-box" id="box-plate-number">
+          <strong>车牌号</strong>
+          <span id="plate-number">待填写</span>
         </div>
       </div>
       <div class="map-links" id="weekly-map-links"></div>
@@ -778,9 +786,11 @@
       document.getElementById("meeting-time").textContent = data.weekly.meeting_time;
       const transportNote = [data.weekly.drive_time, data.weekly.service_area].filter(Boolean).join(" · ");
       document.getElementById("drive-service").textContent = transportNote || "待填写";
+      document.getElementById("plate-number").textContent = data.weekly.plate_number || "待填写";
       document.getElementById("mobile-meeting-place").textContent = data.weekly.meeting_place || "待填写";
       document.getElementById("mobile-meeting-time").textContent = data.weekly.meeting_time || "待填写";
       document.getElementById("mobile-transport-note").textContent = transportNote || "待填写";
+      document.getElementById("mobile-plate-number").textContent = data.weekly.plate_number || "待填写";
       document.getElementById("meeting-desc").textContent = data.weekly.route_brief;
       document.getElementById("route-brief").textContent = data.weekly.route_brief;
 
@@ -795,9 +805,11 @@
       toggleBlock("box-meeting-place", data.weekly.meeting_place);
       toggleBlock("box-meeting-time", data.weekly.meeting_time);
       toggleBlock("box-drive-service", transportNote);
+      toggleBlock("box-plate-number", data.weekly.plate_number);
       toggleBlock("mobile-box-time", data.weekly.meeting_time);
       toggleBlock("mobile-box-place", data.weekly.meeting_place);
       toggleBlock("mobile-box-transport", transportNote);
+      toggleBlock("mobile-box-plate", data.weekly.plate_number);
 
       const elevationVisual = data.weekly.elevation_profile_image || "";
       toggleBlock("elevation-visual", elevationVisual);
