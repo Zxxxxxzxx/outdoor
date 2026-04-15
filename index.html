@@ -320,6 +320,46 @@
       gap: 12px;
       margin-top: 12px;
     }
+    .leader-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .leader-card {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .leader-role {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .leader-name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .leader-phone,
+    .leader-empty {
+      display: block;
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      word-break: break-all;
+    }
+    .leader-phone {
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 700;
+    }
     .cta-row {
       display: flex;
       flex-wrap: wrap;
@@ -596,6 +636,11 @@
       .section-desc { margin-top: 8px; font-size: 13px; line-height: 1.65; }
       .meeting-grid,
       .meeting-meta { display: none; }
+      .leader-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
+      .leader-card { padding: 14px 15px; }
+      .leader-name { font-size: 14px; }
+      .leader-phone,
+      .leader-empty { font-size: 12px; }
       .map-links { grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
       .map-card { min-height: auto; padding: 13px; border-radius: 16px; }
       .map-card em { margin-top: 10px; }
@@ -748,6 +793,7 @@
           <span id="plate-number">待填写</span>
         </div>
       </div>
+      <div class="leader-grid" id="leader-grid" style="display:none"></div>
       <div class="map-links" id="weekly-map-links"></div>
     </section>
 
@@ -784,7 +830,6 @@
       <p class="section-kicker">Tab 04</p>
       <h2 class="section-title">户外常见场景</h2>
       <p class="section-desc" id="about-intro">把遇到蛇、抽筋、中暑这些常见情况先讲清楚，队员出发前先知道怎么处理。</p>
-      <div class="panel-list" id="about-notes"></div>
       <div class="risk-grid" id="about-risk-cards"></div>
       <div class="empty-note" id="about-risk-empty" style="display:none">当前还没录入详细风险卡片。</div>
     </section>
@@ -854,6 +899,31 @@
       }).join("");
     }
 
+    function renderLeaderGrid(containerId, items) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const leaders = (items || []).filter(item => item && (item.name || item.phone));
+      if (!leaders.length) {
+        el.innerHTML = "";
+        el.style.display = "none";
+        return;
+      }
+      el.style.display = "";
+      el.innerHTML = leaders.map(item => {
+        const phone = String(item.phone || "").trim();
+        const tel = phone.replace(/[^\d+]/g, "");
+        return `
+          <div class="leader-card">
+            <div class="leader-role">${item.role || "领队"}</div>
+            <p class="leader-name">${item.name || "待补充姓名"}</p>
+            ${phone
+              ? `<a class="leader-phone" href="tel:${tel}">${phone}</a>`
+              : `<span class="leader-empty">电话待补充</span>`}
+          </div>
+        `;
+      }).join("");
+    }
+
     loadSiteData().then(data => {
       const weeklySceneryRoute = (data.routeLibrary.routes || []).find(route => route.name === data.site.title) || data.routeLibrary.routes[0];
       document.getElementById("site-kicker").textContent = data.site.kicker;
@@ -878,6 +948,7 @@
       document.getElementById("mobile-plate-number").textContent = data.weekly.plate_number || "待填写";
       document.getElementById("meeting-desc").textContent = data.weekly.route_brief;
       document.getElementById("route-brief").textContent = data.weekly.route_brief;
+      renderLeaderGrid("leader-grid", data.weekly.leaders);
 
       const toggleBlock = (id, val) => {
         const el = document.getElementById(id);
@@ -942,7 +1013,6 @@
       } else {
         document.getElementById("scenery-empty").style.display = "";
       }
-      renderPanelList("about-notes", data.about.notes);
       if (data.about.risk_cards && data.about.risk_cards.length) {
         renderRiskCards("about-risk-cards", data.about.risk_cards);
       } else {

@@ -815,8 +815,32 @@
       </div>
 
       <div class="admin-section">
-        <div class="admin-subtitle">本周路线图</div>
+        <div class="admin-subtitle">集合指令与路线图</div>
         <div class="admin-form">
+          <div class="admin-field">
+            <label for="admin-weekly-leader-front-name">前队领队姓名</label>
+            <input id="admin-weekly-leader-front-name" type="text" placeholder="例如：阿杰">
+          </div>
+          <div class="admin-field">
+            <label for="admin-weekly-leader-front-phone">前队领队电话</label>
+            <input id="admin-weekly-leader-front-phone" type="text" inputmode="tel" placeholder="例如：13800000000">
+          </div>
+          <div class="admin-field">
+            <label for="admin-weekly-leader-middle-name">中队领队姓名</label>
+            <input id="admin-weekly-leader-middle-name" type="text" placeholder="例如：阿青">
+          </div>
+          <div class="admin-field">
+            <label for="admin-weekly-leader-middle-phone">中队领队电话</label>
+            <input id="admin-weekly-leader-middle-phone" type="text" inputmode="tel" placeholder="例如：13900000000">
+          </div>
+          <div class="admin-field">
+            <label for="admin-weekly-leader-rear-name">后队领队姓名</label>
+            <input id="admin-weekly-leader-rear-name" type="text" placeholder="例如：阿凯">
+          </div>
+          <div class="admin-field">
+            <label for="admin-weekly-leader-rear-phone">后队领队电话</label>
+            <input id="admin-weekly-leader-rear-phone" type="text" inputmode="tel" placeholder="例如：13700000000">
+          </div>
           <div class="admin-field full">
             <label for="admin-weekly-plate-number">车牌号</label>
             <input id="admin-weekly-plate-number" type="text" placeholder="例如：沪A12345 或 车牌待发">
@@ -857,12 +881,7 @@
             <label for="admin-about-intro">模块说明</label>
             <textarea id="admin-about-intro"></textarea>
           </div>
-          <div class="admin-field full">
-            <label for="admin-about-notes">场景条目，每行一条，格式：标题｜内容</label>
-            <textarea id="admin-about-notes"></textarea>
-          </div>
         </div>
-        <p class="admin-note">例如：`遇到蛇｜先停下，不追打，缓慢拉开距离，提醒队伍绕行并通知领队。`</p>
         <div class="admin-inline">
           <button class="admin-btn ghost" id="admin-about-risk-add-btn" type="button">新增详细风险卡片</button>
         </div>
@@ -1361,12 +1380,20 @@
       document.getElementById("admin-route-animals").value = textLines(adminDraft.animals);
       document.getElementById("admin-route-review-summary").value = (adminDraft.review && adminDraft.review.summary) || "";
       document.getElementById("admin-route-review-notes").value = textLines(adminDraft.review && adminDraft.review.notes);
+      const leaderFront = ((siteData && siteData.weekly && siteData.weekly.leaders) || []).find(item => item.key === "front") || {};
+      const leaderMiddle = ((siteData && siteData.weekly && siteData.weekly.leaders) || []).find(item => item.key === "middle") || {};
+      const leaderRear = ((siteData && siteData.weekly && siteData.weekly.leaders) || []).find(item => item.key === "rear") || {};
+      document.getElementById("admin-weekly-leader-front-name").value = leaderFront.name || "";
+      document.getElementById("admin-weekly-leader-front-phone").value = leaderFront.phone || "";
+      document.getElementById("admin-weekly-leader-middle-name").value = leaderMiddle.name || "";
+      document.getElementById("admin-weekly-leader-middle-phone").value = leaderMiddle.phone || "";
+      document.getElementById("admin-weekly-leader-rear-name").value = leaderRear.name || "";
+      document.getElementById("admin-weekly-leader-rear-phone").value = leaderRear.phone || "";
       document.getElementById("admin-weekly-plate-number").value = (siteData && siteData.weekly && siteData.weekly.plate_number) || "";
       document.getElementById("admin-weekly-route-map-url").value = (siteData && siteData.weekly && siteData.weekly.route_map_url) || "";
       document.getElementById("admin-weekly-retreat-map-url").value = (siteData && siteData.weekly && siteData.weekly.retreat_map_url) || "";
       document.getElementById("admin-weekly-backup-map-url").value = (siteData && siteData.weekly && siteData.weekly.backup_map_url) || "";
       document.getElementById("admin-about-intro").value = (siteData && siteData.about && siteData.about.intro) || "";
-      document.getElementById("admin-about-notes").value = panelLines(siteData && siteData.about && siteData.about.notes);
       adminElevationProfileImage = (siteData && siteData.weekly && siteData.weekly.elevation_profile_image) || "";
       adminAboutRiskCards = cloneValue((siteData && siteData.about && siteData.about.risk_cards) || []);
       document.getElementById("admin-gallery-upload").value = "";
@@ -1476,13 +1503,33 @@
       if (index === -1) return null;
 
       siteData.routeLibrary.routes[index] = draft;
+      siteData.weekly.leaders = [
+        {
+          key: "front",
+          role: "前队",
+          name: document.getElementById("admin-weekly-leader-front-name").value.trim(),
+          phone: document.getElementById("admin-weekly-leader-front-phone").value.trim(),
+        },
+        {
+          key: "middle",
+          role: "中队",
+          name: document.getElementById("admin-weekly-leader-middle-name").value.trim(),
+          phone: document.getElementById("admin-weekly-leader-middle-phone").value.trim(),
+        },
+        {
+          key: "rear",
+          role: "后队",
+          name: document.getElementById("admin-weekly-leader-rear-name").value.trim(),
+          phone: document.getElementById("admin-weekly-leader-rear-phone").value.trim(),
+        },
+      ];
       siteData.weekly.plate_number = document.getElementById("admin-weekly-plate-number").value.trim();
       siteData.weekly.route_map_url = document.getElementById("admin-weekly-route-map-url").value.trim();
       siteData.weekly.retreat_map_url = document.getElementById("admin-weekly-retreat-map-url").value.trim();
       siteData.weekly.backup_map_url = document.getElementById("admin-weekly-backup-map-url").value.trim();
       siteData.weekly.elevation_profile_image = adminElevationProfileImage;
       siteData.about.intro = document.getElementById("admin-about-intro").value.trim();
-      siteData.about.notes = parsePanelLines(document.getElementById("admin-about-notes").value);
+      siteData.about.notes = [];
       siteData.about.risk_cards = syncAdminAboutRiskCardsFromForm();
       siteData = normalizeSiteData(siteData);
       routes = siteData.routeLibrary.routes || [];

@@ -1,3 +1,9 @@
+const WEEKLY_LEADER_ROLES = [
+  { key: "front", role: "前队" },
+  { key: "middle", role: "中队" },
+  { key: "rear", role: "后队" },
+];
+
 const DEPLOY_SITE_DEFAULTS = {
   site: {
     title: "大松湾古道",
@@ -17,6 +23,7 @@ const DEPLOY_SITE_DEFAULTS = {
     status_label: "",
     meeting_place: "",
     meeting_time: "",
+    leaders: WEEKLY_LEADER_ROLES.map(item => ({ ...item, name: "", phone: "" })),
     plate_number: "",
     drive_time: "",
     service_area: "",
@@ -65,6 +72,23 @@ function normalizePanelList(value) {
       text: String((item && item.text) || "").trim(),
     }))
     .filter(item => item.title || item.text);
+}
+
+function normalizeLeaderList(value) {
+  const items = Array.isArray(value) ? value : [];
+  return WEEKLY_LEADER_ROLES.map((role, index) => {
+    const source = items.find(item => {
+      const key = String((item && item.key) || "").trim();
+      const label = String((item && (item.role || item.label)) || "").trim();
+      return key === role.key || label === role.role;
+    }) || items[index] || {};
+    return {
+      key: role.key,
+      role: role.role,
+      name: String((source && source.name) || "").trim(),
+      phone: String((source && source.phone) || "").trim(),
+    };
+  });
 }
 
 function normalizeRiskCardList(value) {
@@ -160,6 +184,7 @@ function normalizeSiteData(raw) {
     weekly: {
       ...defaults.weekly,
       ...weekly,
+      leaders: normalizeLeaderList(weekly.leaders || weekly.contacts || weekly.meeting_leaders || defaults.weekly.leaders),
       route_items: normalizePanelList(weekly.route_items || defaults.weekly.route_items),
     },
     routeLibrary: {
