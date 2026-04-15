@@ -1597,6 +1597,11 @@
       return btoa(binary);
     }
 
+    function isGithubShaConflict(message) {
+      const text = String(message || "").toLowerCase();
+      return text.includes("does not match") || (text.includes("sha") && text.includes("match"));
+    }
+
     async function publishAdminChanges() {
       const draft = applyAdminDraftToPage();
       if (!draft || !siteData) {
@@ -1631,37 +1636,62 @@
           "Authorization": `Bearer ${settings.token}`,
         };
 
-        const currentResp = await fetch(url, { headers: commonHeaders });
-        const current = await currentResp.json();
-        if (!currentResp.ok) {
-          throw new Error(current.message || "读取 GitHub 文件失败");
+        const content = encodeBase64Utf8(`${JSON.stringify(normalizeSiteData(siteData), null, 2)}\n`);
+        let lastMessage = "";
+
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          if (attempt === 1) {
+            setAdminStatus("检测到文件刚被更新，正在自动重试一次。");
+          }
+
+          const currentResp = await fetch(url, {
+            headers: {
+              ...commonHeaders,
+              "Cache-Control": "no-cache",
+            },
+          });
+          const current = await currentResp.json();
+          if (!currentResp.ok) {
+            throw new Error(current.message || "读取 GitHub 文件失败");
+          }
+
+          const payload = {
+            message: `update route ${draft.name || draft.id} via web admin`,
+            content,
+            sha: current.sha,
+            branch: settings.branch,
+          };
+
+          const updateResp = await fetch(`https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${apiPath}`, {
+            method: "PUT",
+            headers: {
+              ...commonHeaders,
+              "Content-Type": "application/json",
+              "Cache-Control": "no-cache",
+            },
+            body: JSON.stringify(payload),
+          });
+          const result = await updateResp.json();
+          if (updateResp.ok) {
+            closeAdminModal();
+            setAdminStatus("已提交到 GitHub。等 30 到 90 秒后刷新正式站，通常就能看到。", "success");
+            return;
+          }
+
+          lastMessage = result.message || "提交 GitHub 失败";
+          if (!isGithubShaConflict(lastMessage) || attempt === 1) {
+            throw new Error(lastMessage);
+          }
         }
-
-        const payload = {
-          message: `update route ${draft.name || draft.id} via web admin`,
-          content: encodeBase64Utf8(`${JSON.stringify(normalizeSiteData(siteData), null, 2)}\n`),
-          sha: current.sha,
-          branch: settings.branch,
-        };
-
-        const updateResp = await fetch(`https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${apiPath}`, {
-          method: "PUT",
-          headers: {
-            ...commonHeaders,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-        const result = await updateResp.json();
-        if (!updateResp.ok) {
-          throw new Error(result.message || "提交 GitHub 失败");
-        }
-
-        closeAdminModal();
-        setAdminStatus("已提交到 GitHub。等 30 到 90 秒后刷新正式站，通常就能看到。", "success");
+        throw new Error(lastMessage || "提交 GitHub 失败");
       } catch (err) {
         console.error(err);
-        setAdminStatus(`发布失败：${err.message || err}`, "error");
+        const message = err.message || err;
+        if (isGithubShaConflict(message)) {
+          setAdminStatus("发布失败：文件刚被其他提交更新过，请重新点一次发布。", "error");
+          return;
+        }
+        setAdminStatus(`发布失败：${message}`, "error");
       }
     }
 
