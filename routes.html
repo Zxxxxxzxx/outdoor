@@ -458,6 +458,64 @@
       color: var(--muted);
       font-size: 13px;
     }
+    .admin-risk-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 12px;
+    }
+    .admin-risk-card {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.58);
+      border: 1px solid rgba(255,255,255,0.78);
+    }
+    .admin-risk-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .admin-risk-label {
+      font-size: 14px;
+      letter-spacing: -0.02em;
+      font-weight: 800;
+    }
+    .admin-risk-layout {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .admin-risk-media {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .admin-risk-photo {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      border-radius: 16px;
+      object-fit: cover;
+      background: rgba(245,243,238,0.92);
+    }
+    .admin-risk-photo-empty {
+      min-height: 180px;
+      padding: 14px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: rgba(255,255,255,0.52);
+      border: 1px dashed rgba(184, 116, 63, 0.18);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .admin-risk-form {
+      margin-top: 0;
+    }
     .admin-elevation-preview {
       margin-top: 12px;
     }
@@ -586,6 +644,7 @@
       .detail-head { flex-direction: column; }
       .gallery-grid { grid-template-columns: 1fr; }
       .admin-form { grid-template-columns: 1fr; }
+      .admin-risk-layout { grid-template-columns: 1fr; }
       .admin-gallery-item { grid-template-columns: 1fr; }
       .admin-gallery-thumb { width: 100%; height: 180px; }
       .admin-share-item { grid-template-columns: 1fr; }
@@ -804,6 +863,11 @@
           </div>
         </div>
         <p class="admin-note">例如：`遇到蛇｜先停下，不追打，缓慢拉开距离，提醒队伍绕行并通知领队。`</p>
+        <div class="admin-inline">
+          <button class="admin-btn ghost" id="admin-about-risk-add-btn" type="button">新增详细风险卡片</button>
+        </div>
+        <p class="admin-note">这里维护常见图片、风险类型、常见场景 / 诱因、预防措施和自救及处理方法。图片可以先留空，后面再补。</p>
+        <div class="admin-risk-list" id="admin-about-risk-cards"></div>
       </div>
 
       <div class="admin-section">
@@ -894,6 +958,7 @@
     let activeRouteId = "";
     let adminDraft = null;
     let adminElevationProfileImage = "";
+    let adminAboutRiskCards = [];
 
     const adminFab = document.getElementById("admin-fab");
     const adminOverlay = document.getElementById("admin-overlay");
@@ -974,6 +1039,146 @@
           return { title: line.trim(), text: "" };
         })
         .filter(item => item.title || item.text);
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/"/g, "&quot;");
+    }
+
+    function createRiskCardDraft(overrides = {}) {
+      return {
+        id: `risk_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        title: "",
+        risk_type: "",
+        scene_trigger: "",
+        prevention: "",
+        response: "",
+        image: "",
+        ...overrides,
+      };
+    }
+
+    function syncAdminAboutRiskCardsFromForm() {
+      const cards = [...document.querySelectorAll(".admin-risk-card")].map(card => ({
+        id: card.dataset.id || "",
+        title: card.querySelector('[data-field="title"]')?.value.trim() || "",
+        risk_type: card.querySelector('[data-field="risk_type"]')?.value.trim() || "",
+        scene_trigger: card.querySelector('[data-field="scene_trigger"]')?.value.trim() || "",
+        prevention: card.querySelector('[data-field="prevention"]')?.value.trim() || "",
+        response: card.querySelector('[data-field="response"]')?.value.trim() || "",
+        image: card.dataset.image || "",
+      }));
+      adminAboutRiskCards = normalizeRiskCardList(cards);
+      return adminAboutRiskCards;
+    }
+
+    function renderAdminRiskCards() {
+      const el = document.getElementById("admin-about-risk-cards");
+      if (!el) return;
+      if (!adminAboutRiskCards.length) {
+        el.innerHTML = `<div class="admin-gallery-empty">当前还没有详细风险卡片。点上面的按钮就可以新增。</div>`;
+        return;
+      }
+
+      el.innerHTML = adminAboutRiskCards.map((card, index) => `
+        <div class="admin-risk-card" data-index="${index}" data-id="${escapeAttr(card.id || "")}" data-image="${escapeAttr(card.image || "")}">
+          <div class="admin-risk-head">
+            <div class="admin-risk-label">${escapeHtml(card.title || `风险卡片 ${index + 1}`)}</div>
+            <button class="admin-btn danger admin-risk-remove" type="button" data-index="${index}">删除卡片</button>
+          </div>
+          <div class="admin-risk-layout">
+            <div class="admin-risk-media">
+              ${card.image
+                ? `<img class="admin-risk-photo" src="${escapeAttr(card.image)}" alt="${escapeAttr(card.title || "风险图片")}">`
+                : `<div class="admin-risk-photo-empty">当前还没有上传常见图片。后面补图也可以。</div>`}
+              <input class="admin-risk-image-upload" type="file" accept="image/*" data-index="${index}">
+              ${card.image ? `<button class="admin-btn ghost admin-risk-image-remove" type="button" data-index="${index}">删除图片</button>` : ""}
+            </div>
+            <div class="admin-form admin-risk-form">
+              <div class="admin-field">
+                <label>名称 / 标题</label>
+                <input class="admin-risk-field" data-index="${index}" data-field="title" type="text" value="${escapeAttr(card.title || "")}" placeholder="例如：蚂蟥（水蛭）">
+              </div>
+              <div class="admin-field">
+                <label>风险类型</label>
+                <input class="admin-risk-field" data-index="${index}" data-field="risk_type" type="text" value="${escapeAttr(card.risk_type || "")}" placeholder="例如：虫害 / 咬伤 / 环境性风险">
+              </div>
+              <div class="admin-field full">
+                <label>常见场景 / 诱因</label>
+                <textarea class="admin-risk-field" data-index="${index}" data-field="scene_trigger" placeholder="例如：溯溪、潮湿草丛、雨后林间">${escapeHtml(card.scene_trigger || "")}</textarea>
+              </div>
+              <div class="admin-field full">
+                <label>预防措施</label>
+                <textarea class="admin-risk-field" data-index="${index}" data-field="prevention" placeholder="例如：穿长袜并扎紧裤脚，避免直接接触草丛。">${escapeHtml(card.prevention || "")}</textarea>
+              </div>
+              <div class="admin-field full">
+                <label>自救及处理方法</label>
+                <textarea class="admin-risk-field" data-index="${index}" data-field="response" placeholder="例如：不要硬拽，先离险、再按规范处理。">${escapeHtml(card.response || "")}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      [...el.querySelectorAll(".admin-risk-field")].forEach(field => {
+        field.addEventListener("input", event => {
+          const index = Number(event.target.dataset.index);
+          const key = event.target.dataset.field;
+          if (!adminAboutRiskCards[index] || !key) return;
+          adminAboutRiskCards[index][key] = event.target.value.trim();
+          const label = el.querySelector(`.admin-risk-card[data-index="${index}"] .admin-risk-label`);
+          if (label && key === "title") {
+            label.textContent = event.target.value.trim() || `风险卡片 ${index + 1}`;
+          }
+        });
+      });
+
+      [...el.querySelectorAll(".admin-risk-remove")].forEach(button => {
+        button.addEventListener("click", () => {
+          syncAdminAboutRiskCardsFromForm();
+          adminAboutRiskCards.splice(Number(button.dataset.index), 1);
+          renderAdminRiskCards();
+          setAdminStatus("已从草稿里删除这张风险卡片。", "success");
+        });
+      });
+
+      [...el.querySelectorAll(".admin-risk-image-remove")].forEach(button => {
+        button.addEventListener("click", () => {
+          syncAdminAboutRiskCardsFromForm();
+          const index = Number(button.dataset.index);
+          if (!adminAboutRiskCards[index]) return;
+          adminAboutRiskCards[index].image = "";
+          renderAdminRiskCards();
+          setAdminStatus("已从草稿里删除风险图片。", "success");
+        });
+      });
+
+      [...el.querySelectorAll(".admin-risk-image-upload")].forEach(input => {
+        input.addEventListener("change", async event => {
+          syncAdminAboutRiskCardsFromForm();
+          const index = Number(event.target.dataset.index);
+          const file = (event.target.files || [])[0];
+          if (!file || !adminAboutRiskCards[index]) return;
+          setAdminStatus("正在压缩风险图片，请稍等。");
+          try {
+            adminAboutRiskCards[index].image = await compressImage(file);
+            renderAdminRiskCards();
+            setAdminStatus("风险图片已经加入当前草稿。", "success");
+          } catch (err) {
+            console.error(err);
+            setAdminStatus(`风险图片处理失败：${err.message || err}`, "error");
+          } finally {
+            event.target.value = "";
+          }
+        });
+      });
     }
 
     function readAdminSettings() {
@@ -1163,11 +1368,13 @@
       document.getElementById("admin-about-intro").value = (siteData && siteData.about && siteData.about.intro) || "";
       document.getElementById("admin-about-notes").value = panelLines(siteData && siteData.about && siteData.about.notes);
       adminElevationProfileImage = (siteData && siteData.weekly && siteData.weekly.elevation_profile_image) || "";
+      adminAboutRiskCards = cloneValue((siteData && siteData.about && siteData.about.risk_cards) || []);
       document.getElementById("admin-gallery-upload").value = "";
       document.getElementById("admin-elevation-visual-upload").value = "";
       fillAdminSettingsForm();
       renderAdminGallery();
       renderAdminElevationPreview();
+      renderAdminRiskCards();
       adminOverlay.hidden = false;
       document.body.style.overflow = "hidden";
     }
@@ -1177,6 +1384,7 @@
       document.body.style.overflow = "";
       adminDraft = null;
       adminElevationProfileImage = "";
+      adminAboutRiskCards = [];
     }
 
     function renderAdminGallery() {
@@ -1275,6 +1483,7 @@
       siteData.weekly.elevation_profile_image = adminElevationProfileImage;
       siteData.about.intro = document.getElementById("admin-about-intro").value.trim();
       siteData.about.notes = parsePanelLines(document.getElementById("admin-about-notes").value);
+      siteData.about.risk_cards = syncAdminAboutRiskCardsFromForm();
       siteData = normalizeSiteData(siteData);
       routes = siteData.routeLibrary.routes || [];
       activeRouteId = draft.id;
@@ -1437,6 +1646,12 @@
         return;
       }
       setAdminStatus("当前页预览已更新，还没有推送到公网。", "success");
+    });
+    document.getElementById("admin-about-risk-add-btn").addEventListener("click", () => {
+      syncAdminAboutRiskCardsFromForm();
+      adminAboutRiskCards.push(createRiskCardDraft());
+      renderAdminRiskCards();
+      setAdminStatus("已新增一张详细风险卡片。", "success");
     });
     document.getElementById("admin-publish-btn").addEventListener("click", () => publishAdminChanges());
     document.getElementById("admin-open-token-btn").addEventListener("click", () => openGithubTokenPage());

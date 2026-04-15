@@ -414,6 +414,86 @@
       font-size: 12px;
       font-weight: 700;
     }
+    .risk-grid {
+      margin-top: 16px;
+      display: grid;
+      gap: 14px;
+    }
+    .risk-card {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .risk-card.no-media { grid-template-columns: 1fr; }
+    .risk-card-media {
+      width: 100%;
+      height: 100%;
+      min-height: 180px;
+      border-radius: 18px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+    }
+    .risk-card-body {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .risk-card-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .risk-card-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+    .risk-card-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(184, 116, 63, 0.12);
+      color: var(--caramel-deep);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .risk-card-copy {
+      display: grid;
+      gap: 10px;
+    }
+    .risk-row {
+      display: grid;
+      grid-template-columns: 106px 1fr;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(184, 116, 63, 0.1);
+    }
+    .risk-row:first-child {
+      padding-top: 0;
+      border-top: none;
+    }
+    .risk-row strong {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .risk-row span {
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.7;
+    }
     .gallery-grid {
       margin-top: 16px;
       display: grid;
@@ -535,6 +615,9 @@
       .itinerary-time { font-size: 11px; }
       .itinerary-copy,
       .itinerary-note { font-size: 12px; line-height: 1.65; }
+      .risk-card { grid-template-columns: 1fr; padding: 14px 15px; }
+      .risk-card-media { min-height: 160px; }
+      .risk-row { grid-template-columns: 1fr; gap: 4px; }
       .gallery-grid { grid-template-columns: 1fr; }
       .gallery-photo { height: 180px; }
       .tabbar {
@@ -702,6 +785,8 @@
       <h2 class="section-title">户外常见场景</h2>
       <p class="section-desc" id="about-intro">把遇到蛇、抽筋、中暑这些常见情况先讲清楚，队员出发前先知道怎么处理。</p>
       <div class="panel-list" id="about-notes"></div>
+      <div class="risk-grid" id="about-risk-cards"></div>
+      <div class="empty-note" id="about-risk-empty" style="display:none">当前还没录入详细风险卡片。</div>
     </section>
 
     <div class="footer">华东户外线路库 v0.4 · Deployable Static Version</div>
@@ -858,6 +943,11 @@
         document.getElementById("scenery-empty").style.display = "";
       }
       renderPanelList("about-notes", data.about.notes);
+      if (data.about.risk_cards && data.about.risk_cards.length) {
+        renderRiskCards("about-risk-cards", data.about.risk_cards);
+      } else {
+        document.getElementById("about-risk-empty").style.display = "";
+      }
     }).catch(err => {
       console.error(err);
       document.body.innerHTML = "<div style='padding:40px;font-family:Inter,sans-serif;color:#25302d'>读取站点数据失败，请检查 data/site.json 是否存在。</div>";

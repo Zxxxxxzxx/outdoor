@@ -42,6 +42,7 @@ const DEPLOY_SITE_DEFAULTS = {
   about: {
     intro: "",
     notes: [],
+    risk_cards: [],
   },
 };
 
@@ -64,6 +65,21 @@ function normalizePanelList(value) {
       text: String((item && item.text) || "").trim(),
     }))
     .filter(item => item.title || item.text);
+}
+
+function normalizeRiskCardList(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item, index) => ({
+      id: String((item && item.id) || `risk_${index + 1}`).trim(),
+      title: String((item && (item.title || item.name)) || "").trim(),
+      risk_type: String((item && (item.risk_type || item.riskType || item.category)) || "").trim(),
+      scene_trigger: String((item && (item.scene_trigger || item.sceneTrigger || item.scenes || item.scene || item.trigger)) || "").trim(),
+      prevention: String((item && (item.prevention || item.preventive_measures)) || "").trim(),
+      response: String((item && (item.response || item.self_help || item.treatment || item.handling)) || "").trim(),
+      image: String((item && (item.image || item.src || item.photo)) || "").trim(),
+    }))
+    .filter(item => item.title || item.risk_type || item.scene_trigger || item.prevention || item.response || item.image);
 }
 
 function normalizeGallery(value) {
@@ -129,6 +145,7 @@ function normalizeSiteData(raw) {
   const routeLibrary = source.routeLibrary && typeof source.routeLibrary === "object" ? source.routeLibrary : {};
   const gear = source.gear && typeof source.gear === "object" ? source.gear : {};
   const about = source.about && typeof source.about === "object" ? source.about : {};
+  const aboutRiskCards = about.risk_cards || about.riskCards || about.risks || [];
   const sceneryTab = (source.sceneryTab && typeof source.sceneryTab === "object")
     ? source.sceneryTab
     : ((source.notesTab && typeof source.notesTab === "object") ? source.notesTab : {});
@@ -164,6 +181,7 @@ function normalizeSiteData(raw) {
       ...defaults.about,
       ...about,
       notes: normalizePanelList(about.notes || defaults.about.notes),
+      risk_cards: normalizeRiskCardList(aboutRiskCards),
     },
   };
 
@@ -211,6 +229,27 @@ function renderPanelList(containerId, items) {
       <strong>${item.title}</strong>
       <span>${item.text}</span>
     </div>
+  `).join("");
+}
+
+function renderRiskCards(containerId, items) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = (items || []).map(item => `
+    <article class="risk-card ${item.image ? "" : "no-media"}">
+      ${item.image ? `<img class="risk-card-media" src="${item.image}" alt="${item.title || "常见风险"}">` : ""}
+      <div class="risk-card-body">
+        <div class="risk-card-head">
+          <strong class="risk-card-title">${item.title || "未命名风险"}</strong>
+          ${item.risk_type ? `<span class="risk-card-tag">${item.risk_type}</span>` : ""}
+        </div>
+        <div class="risk-card-copy">
+          ${item.scene_trigger ? `<div class="risk-row"><strong>常见场景 / 诱因</strong><span>${item.scene_trigger}</span></div>` : ""}
+          ${item.prevention ? `<div class="risk-row"><strong>预防措施</strong><span>${item.prevention}</span></div>` : ""}
+          ${item.response ? `<div class="risk-row"><strong>自救及处理</strong><span>${item.response}</span></div>` : ""}
+        </div>
+      </div>
+    </article>
   `).join("");
 }
 
