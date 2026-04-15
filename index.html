@@ -224,7 +224,7 @@
       background: rgba(255, 255, 255, 0.4);
     }
     .meeting-card {
-      padding: 22px;
+      padding: 24px;
       border-radius: var(--radius-xl);
       margin-bottom: 16px;
     }
@@ -251,7 +251,7 @@
     }
     .meeting-grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: minmax(0, 1.45fr) minmax(220px, 0.9fr);
       gap: 12px;
       margin-top: 18px;
     }
@@ -264,6 +264,17 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
     }
+    .meeting-box.primary {
+      padding: 20px 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.54));
+      border-color: rgba(255,255,255,0.88);
+    }
+    .meeting-box.secondary {
+      background: linear-gradient(180deg, rgba(248, 241, 233, 0.72), rgba(255,255,255,0.46));
+    }
+    .meeting-box.meta {
+      background: linear-gradient(180deg, rgba(244, 247, 243, 0.72), rgba(255,255,255,0.46));
+    }
     .meeting-box strong,
     .panel-item strong {
       display: block;
@@ -275,6 +286,19 @@
     .panel-item span {
       font-size: 13px;
       color: var(--muted);
+    }
+    .meeting-box.primary span {
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.6;
+      font-weight: 800;
+    }
+    .meeting-box.secondary span {
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0.06em;
     }
     .itinerary-flow {
       display: grid;
@@ -320,8 +344,34 @@
       gap: 12px;
       margin-top: 12px;
     }
+    .meeting-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .meeting-label strong {
+      margin: 0;
+    }
+    .meta-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 11px 11px;
+      border: 1px solid rgba(183, 116, 63, 0.18);
+      background-color: rgba(184, 116, 63, 0.1);
+    }
+    .meta-icon.service-area {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 11.5V4.5L7.8 2.8V11.5' stroke='%239e6230' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.8 5.3H12.5V11.5H7.8' stroke='%239e6230' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M5.1 6.2V6.2' stroke='%239e6230' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M10.2 7.3V7.3' stroke='%239e6230' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+    .meta-icon.plate {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Crect x='2.2' y='4.4' width='11.6' height='7.2' rx='1.6' stroke='%239e6230' stroke-width='1.4'/%3E%3Cpath d='M4.7 8H11.3' stroke='%239e6230' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
     .meeting-subtitle {
-      margin: 12px 0 0;
+      margin: 14px 0 0;
       font-size: 12px;
       color: var(--muted);
       letter-spacing: 0.04em;
@@ -340,6 +390,15 @@
       border: 1px solid rgba(255, 255, 255, 0.76);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+    }
+    .leader-link {
+      display: block;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+    .leader-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(184, 116, 63, 0.12);
+      border-color: rgba(184, 116, 63, 0.24);
     }
     .leader-role {
       margin: 0 0 8px;
@@ -366,6 +425,17 @@
       text-decoration: none;
       color: var(--ink);
       font-weight: 700;
+    }
+    .leader-cta {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 10px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(184, 116, 63, 0.12);
+      color: var(--caramel-deep);
+      font-size: 11px;
+      font-weight: 800;
     }
     .cta-row {
       display: flex;
@@ -416,6 +486,10 @@
       -webkit-backdrop-filter: blur(16px);
     }
     .map-card.link { box-shadow: 0 12px 26px rgba(184, 116, 63, 0.08); }
+    .map-card.route-main {
+      grid-column: span 2;
+      background: linear-gradient(180deg, rgba(248, 241, 233, 0.82), rgba(255,255,255,0.56));
+    }
     .map-card strong {
       display: block;
       margin-bottom: 6px;
@@ -429,17 +503,19 @@
       line-height: 1.6;
       color: var(--muted);
     }
-    .map-card em {
-      display: inline-flex;
+    .map-card-action {
+      display: flex;
       align-items: center;
-      margin-top: 12px;
-      padding: 7px 11px;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      margin-top: 14px;
       border-radius: 999px;
-      background: rgba(184, 116, 63, 0.12);
+      background: rgba(234, 215, 193, 0.86);
       color: var(--caramel-deep);
-      font-size: 11px;
-      font-style: normal;
+      font-size: 12px;
       font-weight: 800;
+      border: 1px solid rgba(183, 116, 63, 0.12);
     }
     .panel {
       display: none;
@@ -649,9 +725,11 @@
       .leader-name { font-size: 14px; }
       .leader-phone,
       .leader-empty { font-size: 12px; }
+      .leader-cta { margin-top: 8px; }
       .map-links { grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+      .map-card.route-main { grid-column: span 1; }
       .map-card { min-height: auto; padding: 13px; border-radius: 16px; }
-      .map-card em { margin-top: 10px; }
+      .map-card-action { margin-top: 12px; min-height: 42px; }
       .panel-list { margin-top: 12px; gap: 10px; }
       .panel-inline { margin-top: 12px; gap: 6px; }
       .meeting-box,
@@ -782,11 +860,11 @@
       <h2 class="section-title">集合指令</h2>
       <p class="section-desc" id="meeting-desc">首页只保留必须知道的信息：几点、在哪、怎么准备。</p>
       <div class="meeting-grid">
-        <div class="meeting-box" id="box-meeting-place">
+        <div class="meeting-box primary" id="box-meeting-place">
           <strong>集合点</strong>
           <span id="meeting-place">德清高铁站 2 号口 · 到站后统一上车</span>
         </div>
-        <div class="meeting-box" id="box-meeting-time">
+        <div class="meeting-box primary" id="box-meeting-time">
           <strong>集合时间</strong>
           <span id="meeting-time">08:30 AM · 迟到不等</span>
         </div>
@@ -794,12 +872,18 @@
       <div class="meeting-subtitle" id="leader-subtitle" style="display:none">领队联络</div>
       <div class="leader-grid" id="leader-grid" style="display:none"></div>
       <div class="meeting-meta">
-        <div class="meeting-box" id="box-drive-service">
-          <strong>预计车程 / 服务区</strong>
+        <div class="meeting-box meta" id="box-drive-service">
+          <div class="meeting-label">
+            <span class="meta-icon service-area" aria-hidden="true"></span>
+            <strong>预计车程 / 服务区</strong>
+          </div>
           <span id="drive-service">待填写</span>
         </div>
-        <div class="meeting-box" id="box-plate-number">
-          <strong>车牌号</strong>
+        <div class="meeting-box secondary" id="box-plate-number">
+          <div class="meeting-label">
+            <span class="meta-icon plate" aria-hidden="true"></span>
+            <strong>车牌号</strong>
+          </div>
           <span id="plate-number">待填写</span>
         </div>
       </div>
@@ -922,15 +1006,16 @@
       el.innerHTML = leaders.map(item => {
         const phone = String(item.phone || "").trim();
         const tel = phone.replace(/[^\d+]/g, "");
-        return `
-          <div class="leader-card">
-            <div class="leader-role">${item.role || "领队"}</div>
-            <p class="leader-name">${item.name || "待补充姓名"}</p>
-            ${phone
-              ? `<a class="leader-phone" href="tel:${tel}">${phone}</a>`
-              : `<span class="leader-empty">电话待补充</span>`}
-          </div>
+        const body = `
+          <div class="leader-role">${item.role || "领队"}</div>
+          <p class="leader-name">${item.name || "待补充姓名"}</p>
+          ${phone
+            ? `<span class="leader-phone">${phone}</span><span class="leader-cta">点击拨号</span>`
+            : `<span class="leader-empty">电话待补充</span>`}
         `;
+        return phone
+          ? `<a class="leader-card leader-link" href="tel:${tel}" aria-label="${item.role || "领队"} ${item.name || ""} ${phone}">${body}</a>`
+          : `<div class="leader-card">${body}</div>`;
       }).join("");
     }
 
@@ -992,17 +1077,18 @@
       }
 
       const isLikelyUrl = value => /^https?:\/\//i.test(String(value || "").trim());
-      const renderMapEntry = (label, value) => {
+      const renderMapEntry = (label, value, kind = "") => {
         if (!value) return "";
         if (isLikelyUrl(value)) {
-          return `<a class="map-card link" href="${value}" target="_blank" rel="noopener noreferrer"><strong>${label}</strong><span>点击打开轨迹或路线图，建议出发前先收藏。</span><em>打开链接</em></a>`;
+          const extraClass = kind === "main" ? " route-main" : "";
+          return `<a class="map-card link${extraClass}" href="${value}" target="_blank" rel="noopener noreferrer"><strong>${label}</strong><span>点击打开轨迹或路线图，建议出发前先收藏。</span><span class="map-card-action">打开链接</span></a>`;
         }
         return `<div class="map-card"><strong>${label}</strong><span>${value}</span></div>`;
       };
 
       const weeklyMapLinks = [];
       if (data.weekly.route_map_url) {
-        weeklyMapLinks.push(renderMapEntry("正常路线图", data.weekly.route_map_url));
+        weeklyMapLinks.push(renderMapEntry("正常路线图", data.weekly.route_map_url, "main"));
       }
       if (data.weekly.retreat_map_url) {
         weeklyMapLinks.push(renderMapEntry("下撤路线图", data.weekly.retreat_map_url));
