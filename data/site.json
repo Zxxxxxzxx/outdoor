@@ -21,20 +21,20 @@
       {
         "key": "front",
         "role": "前队",
-        "name": "",
-        "phone": ""
+        "name": "帅哥1号",
+        "phone": "10086"
       },
       {
         "key": "middle",
         "role": "中队",
-        "name": "",
-        "phone": ""
+        "name": "帅哥2号",
+        "phone": "10010"
       },
       {
         "key": "rear",
         "role": "后队",
-        "name": "",
-        "phone": ""
+        "name": "帅哥3号",
+        "phone": "119"
       }
     ],
     "plate_number": "沪A12345",
