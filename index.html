@@ -470,9 +470,12 @@
     }
     .map-links {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 10px;
       margin-top: 16px;
+    }
+    .map-links.layout-three {
+      grid-template-columns: 3fr 1fr 1fr;
     }
     .map-card {
       display: block;
@@ -487,8 +490,11 @@
     }
     .map-card.link { box-shadow: 0 12px 26px rgba(184, 116, 63, 0.08); }
     .map-card.route-main {
-      grid-column: span 2;
+      grid-column: 1 / -1;
       background: linear-gradient(180deg, rgba(248, 241, 233, 0.82), rgba(255,255,255,0.56));
+    }
+    .map-links.layout-three .map-card.route-main {
+      grid-column: auto;
     }
     .map-card strong {
       display: block;
@@ -727,6 +733,7 @@
       .leader-empty { font-size: 12px; }
       .leader-cta { margin-top: 8px; }
       .map-links { grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+      .map-links.layout-three { grid-template-columns: 1fr; }
       .map-card.route-main { grid-column: span 1; }
       .map-card { min-height: auto; padding: 13px; border-radius: 16px; }
       .map-card-action { margin-top: 12px; min-height: 42px; }
@@ -1096,7 +1103,9 @@
       if (data.weekly.backup_map_url) {
         weeklyMapLinks.push(renderMapEntry("备用轨迹", data.weekly.backup_map_url));
       }
-      document.getElementById("weekly-map-links").innerHTML = weeklyMapLinks.join("");
+      const weeklyMapLinksEl = document.getElementById("weekly-map-links");
+      weeklyMapLinksEl.classList.toggle("layout-three", weeklyMapLinks.length === 3);
+      weeklyMapLinksEl.innerHTML = weeklyMapLinks.join("");
 
       document.getElementById("gear-intro").textContent = data.gear.intro;
       document.getElementById("scenery-intro").textContent = data.sceneryTab.intro;
