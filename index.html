@@ -912,13 +912,11 @@
       const el = document.getElementById(containerId);
       const titleEl = document.getElementById("leader-subtitle");
       if (!el) return;
-      const leaders = (items || []).filter(item => item && (item.name || item.phone));
-      if (!leaders.length) {
-        el.innerHTML = "";
-        el.style.display = "none";
-        if (titleEl) titleEl.style.display = "none";
-        return;
-      }
+      const leaders = (items || []).length ? items : [
+        { role: "前队", name: "", phone: "" },
+        { role: "中队", name: "", phone: "" },
+        { role: "后队", name: "", phone: "" },
+      ];
       el.style.display = "";
       if (titleEl) titleEl.style.display = "";
       el.innerHTML = leaders.map(item => {
