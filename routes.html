@@ -859,6 +859,32 @@
       </div>
 
       <div class="admin-section">
+        <div class="admin-subtitle">首页概览要项</div>
+        <div class="admin-form">
+          <div class="admin-field">
+            <label for="admin-weekly-difficulty-label">难度备注</label>
+            <input id="admin-weekly-difficulty-label" type="text" placeholder="例如：中等 / 中等偏上">
+          </div>
+          <div class="admin-field">
+            <label for="admin-weekly-mileage-label">里程备注</label>
+            <input id="admin-weekly-mileage-label" type="text" placeholder="例如：轻装往返">
+          </div>
+          <div class="admin-field">
+            <label for="admin-weekly-elevation-label">爬升备注</label>
+            <input id="admin-weekly-elevation-label" type="text" placeholder="例如：四上四下">
+          </div>
+          <div class="admin-field">
+            <label for="admin-weekly-drive-time">预计车程</label>
+            <input id="admin-weekly-drive-time" type="text" placeholder="例如：4.5h">
+          </div>
+          <div class="admin-field full">
+            <label for="admin-weekly-service-area">服务区 / 中途停留</label>
+            <input id="admin-weekly-service-area" type="text" placeholder="例如：嘉绍服务区 20min">
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-section">
         <div class="admin-subtitle">集合指令与路线图</div>
         <div class="admin-form">
           <div class="admin-field full">
@@ -1565,6 +1591,11 @@
       document.getElementById("admin-weekly-leader-middle-phone").value = leaderMiddle.phone || "";
       document.getElementById("admin-weekly-leader-rear-name").value = leaderRear.name || "";
       document.getElementById("admin-weekly-leader-rear-phone").value = leaderRear.phone || "";
+      document.getElementById("admin-weekly-difficulty-label").value = (siteData && siteData.weekly && siteData.weekly.difficulty_label) || "";
+      document.getElementById("admin-weekly-mileage-label").value = (siteData && siteData.weekly && siteData.weekly.mileage_label) || "";
+      document.getElementById("admin-weekly-elevation-label").value = (siteData && siteData.weekly && siteData.weekly.elevation_label) || "";
+      document.getElementById("admin-weekly-drive-time").value = (siteData && siteData.weekly && siteData.weekly.drive_time) || "";
+      document.getElementById("admin-weekly-service-area").value = (siteData && siteData.weekly && siteData.weekly.service_area) || "";
       document.getElementById("admin-weekly-meeting-place").value = (siteData && siteData.weekly && siteData.weekly.meeting_place) || "";
       document.getElementById("admin-weekly-meeting-time").value = (siteData && siteData.weekly && siteData.weekly.meeting_time) || "";
       document.getElementById("admin-weekly-plate-number").value = (siteData && siteData.weekly && siteData.weekly.plate_number) || "";
@@ -1638,7 +1669,7 @@
       if (route.elevation) {
         siteData.weekly.elevation = route.elevation;
       }
-      if (route.drive_time) {
+      if (setAsFeatured && route.drive_time) {
         siteData.weekly.drive_time = route.drive_time;
       }
     }
@@ -1672,6 +1703,11 @@
           phone: document.getElementById("admin-weekly-leader-rear-phone").value.trim(),
         },
       ];
+      siteData.weekly.difficulty_label = document.getElementById("admin-weekly-difficulty-label").value.trim();
+      siteData.weekly.mileage_label = document.getElementById("admin-weekly-mileage-label").value.trim();
+      siteData.weekly.elevation_label = document.getElementById("admin-weekly-elevation-label").value.trim();
+      siteData.weekly.drive_time = document.getElementById("admin-weekly-drive-time").value.trim();
+      siteData.weekly.service_area = document.getElementById("admin-weekly-service-area").value.trim();
       siteData.weekly.meeting_place = document.getElementById("admin-weekly-meeting-place").value.trim();
       siteData.weekly.meeting_time = document.getElementById("admin-weekly-meeting-time").value.trim();
       siteData.weekly.plate_number = document.getElementById("admin-weekly-plate-number").value.trim();
