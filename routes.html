@@ -153,6 +153,12 @@
       display: grid;
       gap: 10px;
     }
+    .route-admin-tools {
+      display: none;
+      margin-top: 14px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .route-item {
       padding: 16px;
       border-radius: var(--radius-md);
@@ -686,6 +692,11 @@
       <section class="list-card glass">
         <p class="section-kicker">Route List</p>
         <h2 class="section-title">线路列表</h2>
+        <div class="route-admin-tools" id="route-admin-tools">
+          <button class="admin-btn ghost" id="route-add-btn" type="button">新增线路</button>
+          <button class="admin-btn ghost" id="route-duplicate-btn" type="button">复制当前线路</button>
+          <button class="admin-btn danger" id="route-delete-btn" type="button">删除当前线路</button>
+        </div>
         <div class="route-list" id="route-list"></div>
       </section>
 
@@ -985,10 +996,12 @@
 
     (function initAdminModeFromQuery() {
       const params = new URLSearchParams(window.location.search);
-      if (params.get("admin") === "1") {
-        localStorage.setItem(ADMIN_FLAG_KEY, "1");
-      } else if (params.get("admin") === "0") {
-        localStorage.removeItem(ADMIN_FLAG_KEY);
+      if (params.has("admin")) {
+        if (params.get("admin") === "0") {
+          localStorage.removeItem(ADMIN_FLAG_KEY);
+        } else {
+          localStorage.setItem(ADMIN_FLAG_KEY, "1");
+        }
       }
     })();
 
@@ -1013,7 +1026,9 @@
     }
 
     function updateAdminEntry() {
-      adminFab.style.display = isAdminEnabled() ? "" : "none";
+      const enabled = isAdminEnabled();
+      adminFab.style.display = enabled ? "" : "none";
+      document.getElementById("route-admin-tools").style.display = enabled ? "flex" : "none";
     }
 
     function getActiveRoute() {
@@ -1414,6 +1429,117 @@
       adminAboutRiskCards = [];
     }
 
+    function createRouteIdSeed(value) {
+      const seed = String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+      return seed || "route";
+    }
+
+    function createUniqueRouteId(value) {
+      const used = new Set((siteData && siteData.routeLibrary && siteData.routeLibrary.routes || []).map(item => item.id));
+      const base = createRouteIdSeed(value);
+      let id = base;
+      let suffix = 2;
+      while (used.has(id)) {
+        id = `${base}_${suffix}`;
+        suffix += 1;
+      }
+      return id;
+    }
+
+    function createEmptyRouteDraft() {
+      return normalizeRoute({
+        id: createUniqueRouteId("route"),
+        name: "新线路",
+        region: "",
+        difficulty: "",
+        season: "",
+        drive_time: "",
+        estimated_time: "",
+        distance: "",
+        elevation: "",
+        duration: "",
+        suitable: "",
+        weather_rule: "",
+        prep: [],
+        risks: [],
+        animals: [],
+        review: {
+          summary: "",
+          notes: [],
+        },
+        gallery: [],
+      });
+    }
+
+    function activateRouteEditor(routeId, statusText) {
+      activeRegion = "全部";
+      activeRouteId = routeId;
+      renderFilters();
+      renderRouteList();
+      renderDetail();
+      openAdminModal();
+      if (statusText) setAdminStatus(statusText, "success");
+    }
+
+    function addRoute() {
+      if (!siteData || !siteData.routeLibrary) return;
+      const route = createEmptyRouteDraft();
+      siteData.routeLibrary.routes = [...(siteData.routeLibrary.routes || []), route];
+      siteData = normalizeSiteData(siteData);
+      routes = siteData.routeLibrary.routes || [];
+      activateRouteEditor(route.id, "已新增线路草稿。填完后点“保存并发布到公网”。");
+    }
+
+    function duplicateCurrentRoute() {
+      if (!siteData || !siteData.routeLibrary) return;
+      const source = adminOverlay.hidden ? cloneValue(getActiveRoute()) : cloneValue(syncAdminDraftFromForm());
+      if (!source) {
+        setAdminStatus("当前没有可复制的线路。", "error");
+        return;
+      }
+      const duplicate = normalizeRoute({
+        ...source,
+        id: createUniqueRouteId(`${source.id || source.name || "route"}_copy`),
+        name: source.name ? `${source.name} 副本` : "线路副本",
+      });
+      const index = siteData.routeLibrary.routes.findIndex(item => item.id === getActiveRoute().id);
+      const insertAt = index >= 0 ? index + 1 : siteData.routeLibrary.routes.length;
+      siteData.routeLibrary.routes.splice(insertAt, 0, duplicate);
+      siteData = normalizeSiteData(siteData);
+      routes = siteData.routeLibrary.routes || [];
+      activateRouteEditor(duplicate.id, "已复制当前线路。修改后点“保存并发布到公网”。");
+    }
+
+    function deleteCurrentRoute() {
+      if (!siteData || !siteData.routeLibrary || !routes.length) return;
+      if (routes.length <= 1) {
+        setAdminStatus("至少保留一条线路，不能全部删空。", "error");
+        return;
+      }
+      const route = getActiveRoute();
+      if (!route) return;
+      if (!window.confirm(`确认删除「${route.name || route.id}」吗？`)) return;
+      const index = siteData.routeLibrary.routes.findIndex(item => item.id === route.id);
+      if (index === -1) return;
+      siteData.routeLibrary.routes.splice(index, 1);
+      siteData = normalizeSiteData(siteData);
+      routes = siteData.routeLibrary.routes || [];
+      const nextRoute = routes[Math.min(index, routes.length - 1)] || routes[0];
+      if (nextRoute) {
+        activeRouteId = nextRoute.id;
+      }
+      if (!adminOverlay.hidden) closeAdminModal();
+      activeRegion = "全部";
+      renderFilters();
+      renderRouteList();
+      renderDetail();
+      setAdminStatus("已删除当前线路。记得点“保存并发布到公网”才会同步到正式站。", "success");
+    }
+
     function renderAdminGallery() {
       const el = document.getElementById("admin-gallery-list");
       if (!adminDraft || !adminDraft.gallery || !adminDraft.gallery.length) {
@@ -1715,6 +1841,9 @@
     }
 
     adminFab.addEventListener("click", () => openAdminModal());
+    document.getElementById("route-add-btn").addEventListener("click", () => addRoute());
+    document.getElementById("route-duplicate-btn").addEventListener("click", () => duplicateCurrentRoute());
+    document.getElementById("route-delete-btn").addEventListener("click", () => deleteCurrentRoute());
     document.getElementById("admin-close-btn").addEventListener("click", () => closeAdminModal());
     document.getElementById("admin-preview-btn").addEventListener("click", () => {
       const draft = applyAdminDraftToPage();
