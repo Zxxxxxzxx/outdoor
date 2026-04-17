@@ -701,6 +701,7 @@
         <h2 class="section-title">线路列表</h2>
         <div class="route-admin-tools" id="route-admin-tools">
           <button class="admin-btn ghost" id="route-add-btn" type="button">新增线路</button>
+          <button class="admin-btn ghost" id="route-feature-home-btn" type="button">设为首页线路</button>
           <button class="admin-btn ghost" id="route-duplicate-btn" type="button">复制当前线路</button>
           <button class="admin-btn danger" id="route-delete-btn" type="button">删除当前线路</button>
         </div>
@@ -1737,6 +1738,48 @@
       activateRouteEditor(route.id, "已新增线路草稿。填完后点“保存并发布到公网”。");
     }
 
+    function setCurrentRouteAsHomepage() {
+      if (!siteData) return;
+      const route = adminOverlay.hidden ? cloneValue(getActiveRoute()) : applyAdminDraftToSiteData(true);
+      if (!route) {
+        setAdminStatus("当前没有可设为首页的线路。", "error");
+        return;
+      }
+
+      siteData.site = siteData.site || {};
+      siteData.weekly = siteData.weekly || {};
+      siteData.site.title = route.name || siteData.site.title || "";
+      siteData.site.featured_route_id = route.id || "";
+      if (route.region) {
+        siteData.site.note = route.region;
+      }
+      if (route.review && route.review.summary) {
+        siteData.weekly.summary = route.review.summary;
+      }
+      if (route.difficulty) {
+        siteData.weekly.difficulty = route.difficulty;
+      }
+      if (route.distance) {
+        siteData.weekly.mileage = route.distance;
+      }
+      if (route.elevation) {
+        siteData.weekly.elevation = route.elevation;
+      }
+      if (route.drive_time) {
+        siteData.weekly.drive_time = route.drive_time;
+      }
+      siteData.weekly.destination = route.name || siteData.weekly.destination || "";
+      siteData = normalizeSiteData(siteData);
+      routes = siteData.routeLibrary.routes || [];
+      activeRouteId = route.id;
+      document.getElementById("route-library-intro").textContent = siteData.routeLibrary.intro || "";
+      renderFilters();
+      renderRouteList();
+      renderDetail();
+      persistCurrentSiteDraft();
+      setAdminStatus("已把当前线路设为首页线路。记得点“保存并发布到公网”。", "success");
+    }
+
     function duplicateCurrentRoute() {
       if (!siteData || !siteData.routeLibrary) return;
       const source = adminOverlay.hidden ? cloneValue(getActiveRoute()) : cloneValue(syncAdminDraftFromForm());
@@ -2157,6 +2200,7 @@
 
     adminFab.addEventListener("click", () => openAdminModal());
     document.getElementById("route-add-btn").addEventListener("click", () => addRoute());
+    document.getElementById("route-feature-home-btn").addEventListener("click", () => setCurrentRouteAsHomepage());
     document.getElementById("route-duplicate-btn").addEventListener("click", () => duplicateCurrentRoute());
     document.getElementById("route-delete-btn").addEventListener("click", () => deleteCurrentRoute());
     document.getElementById("admin-close-btn").addEventListener("click", () => closeAdminModal());

@@ -9,6 +9,7 @@ const DEPLOY_SITE_DEFAULTS = {
     title: "大松湾古道",
     kicker: "Huadong Outdoor Library",
     note: "首页只放要项，细节收进线路库和编辑页",
+    featured_route_id: "",
   },
   weekly: {
     date: "",
@@ -239,6 +240,11 @@ function normalizeSiteData(raw) {
   };
 
   normalized.routeLibrary.routes = normalizeRoutes(routeLibrary.routes, defaults.routeLibrary.routes);
+  normalized.site.featured_route_id = String(
+    normalized.site.featured_route_id ||
+    normalized.site.featuredRouteId ||
+    ""
+  ).trim();
   normalized.weekly.date = String(normalized.weekly.date || "").trim();
   normalized.weekly.summary = String(normalized.weekly.summary || "").trim();
   normalized.weekly.difficulty = String(normalized.weekly.difficulty || "").trim();

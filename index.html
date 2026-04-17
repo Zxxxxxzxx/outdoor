@@ -493,6 +493,11 @@
       grid-column: 1 / -1;
       background: linear-gradient(180deg, rgba(248, 241, 233, 0.82), rgba(255,255,255,0.56));
     }
+    .map-card.route-side {
+      background: linear-gradient(180deg, rgba(250, 250, 248, 0.74), rgba(255,255,255,0.42));
+      border-color: rgba(255,255,255,0.72);
+      box-shadow: 0 8px 18px rgba(37, 48, 45, 0.04);
+    }
     .map-links.layout-three .map-card.route-main {
       grid-column: auto;
     }
@@ -509,6 +514,9 @@
       line-height: 1.6;
       color: var(--muted);
     }
+    .map-card.route-side span {
+      color: #7a827f;
+    }
     .map-card-action {
       display: flex;
       align-items: center;
@@ -522,6 +530,11 @@
       font-size: 12px;
       font-weight: 800;
       border: 1px solid rgba(183, 116, 63, 0.12);
+    }
+    .map-card.route-side .map-card-action {
+      background: rgba(243, 244, 241, 0.92);
+      color: #66706c;
+      border-color: rgba(128, 138, 133, 0.12);
     }
     .panel {
       display: none;
@@ -597,6 +610,16 @@
       font-size: 11px;
       font-weight: 800;
       white-space: nowrap;
+    }
+    .risk-card-tags {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .risk-card-tag-pin {
+      background: rgba(37, 48, 45, 0.1);
+      color: var(--slate);
     }
     .risk-card-copy {
       display: grid;
@@ -1027,7 +1050,10 @@
     }
 
     loadSiteData().then(data => {
-      const weeklySceneryRoute = (data.routeLibrary.routes || []).find(route => route.name === data.site.title) || data.routeLibrary.routes[0];
+      const featuredRouteId = String((data.site && (data.site.featured_route_id || data.site.featuredRouteId)) || "").trim();
+      const weeklySceneryRoute = (data.routeLibrary.routes || []).find(route => route.id === featuredRouteId)
+        || (data.routeLibrary.routes || []).find(route => route.name === data.site.title)
+        || data.routeLibrary.routes[0];
       document.getElementById("site-kicker").textContent = data.site.kicker;
       document.getElementById("site-title").textContent = data.site.title;
       document.getElementById("site-note").textContent = data.site.note;
@@ -1087,7 +1113,7 @@
       const renderMapEntry = (label, value, kind = "") => {
         if (!value) return "";
         if (isLikelyUrl(value)) {
-          const extraClass = kind === "main" ? " route-main" : "";
+          const extraClass = kind === "main" ? " route-main" : (kind === "side" ? " route-side" : "");
           return `<a class="map-card link${extraClass}" href="${value}" target="_blank" rel="noopener noreferrer"><strong>${label}</strong><span>点击打开轨迹或路线图，建议出发前先收藏。</span><span class="map-card-action">打开链接</span></a>`;
         }
         return `<div class="map-card"><strong>${label}</strong><span>${value}</span></div>`;
@@ -1098,10 +1124,10 @@
         weeklyMapLinks.push(renderMapEntry("正常路线图", data.weekly.route_map_url, "main"));
       }
       if (data.weekly.retreat_map_url) {
-        weeklyMapLinks.push(renderMapEntry("下撤路线图", data.weekly.retreat_map_url));
+        weeklyMapLinks.push(renderMapEntry("下撤路线图", data.weekly.retreat_map_url, "side"));
       }
       if (data.weekly.backup_map_url) {
-        weeklyMapLinks.push(renderMapEntry("备用轨迹", data.weekly.backup_map_url));
+        weeklyMapLinks.push(renderMapEntry("备用轨迹", data.weekly.backup_map_url, "side"));
       }
       const weeklyMapLinksEl = document.getElementById("weekly-map-links");
       weeklyMapLinksEl.classList.toggle("layout-three", weeklyMapLinks.length === 3);
