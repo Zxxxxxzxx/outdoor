@@ -877,6 +877,42 @@
       </div>
 
       <div class="admin-section">
+        <div class="admin-subtitle">本周行程</div>
+        <div class="admin-form">
+          <div class="admin-field full">
+            <label for="admin-weekly-route-brief">本周行程摘要</label>
+            <textarea id="admin-weekly-route-brief" placeholder="首页“本周行程”模块顶部的摘要文案"></textarea>
+          </div>
+          <div class="admin-field full">
+            <label for="admin-weekly-itinerary">行程安排</label>
+            <textarea id="admin-weekly-itinerary" placeholder="支持多行；可直接粘贴详细日程"></textarea>
+          </div>
+          <div class="admin-field full">
+            <label for="admin-weekly-route-items">本周行程卡片，每行一条，格式：标题｜内容</label>
+            <textarea id="admin-weekly-route-items" placeholder="例如：线路概况｜12km / 800m+ / 预计 6-7 小时"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-subtitle">详细装备</div>
+        <div class="admin-form">
+          <div class="admin-field full">
+            <label for="admin-gear-intro">装备页说明</label>
+            <textarea id="admin-gear-intro" placeholder="顶部说明文案"></textarea>
+          </div>
+          <div class="admin-field full">
+            <label for="admin-gear-pills">装备标签，每行一条</label>
+            <textarea id="admin-gear-pills" placeholder="例如：夏季徒步"></textarea>
+          </div>
+          <div class="admin-field full">
+            <label for="admin-gear-notes">装备条目，每行一条，格式：标题｜内容</label>
+            <textarea id="admin-gear-notes" placeholder="例如：必带｜徒步鞋、双肩包、速干衣"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-section">
         <div class="admin-subtitle">线路实景图片</div>
         <div class="admin-inline">
           <input id="admin-gallery-upload" type="file" accept="image/*" multiple>
@@ -1408,6 +1444,12 @@
       document.getElementById("admin-weekly-route-map-url").value = (siteData && siteData.weekly && siteData.weekly.route_map_url) || "";
       document.getElementById("admin-weekly-retreat-map-url").value = (siteData && siteData.weekly && siteData.weekly.retreat_map_url) || "";
       document.getElementById("admin-weekly-backup-map-url").value = (siteData && siteData.weekly && siteData.weekly.backup_map_url) || "";
+      document.getElementById("admin-weekly-route-brief").value = (siteData && siteData.weekly && siteData.weekly.route_brief) || "";
+      document.getElementById("admin-weekly-itinerary").value = (siteData && siteData.weekly && siteData.weekly.itinerary) || "";
+      document.getElementById("admin-weekly-route-items").value = panelLines(siteData && siteData.weekly && siteData.weekly.route_items);
+      document.getElementById("admin-gear-intro").value = (siteData && siteData.gear && siteData.gear.intro) || "";
+      document.getElementById("admin-gear-pills").value = textLines(siteData && siteData.gear && siteData.gear.pills);
+      document.getElementById("admin-gear-notes").value = panelLines(siteData && siteData.gear && siteData.gear.notes);
       document.getElementById("admin-about-intro").value = (siteData && siteData.about && siteData.about.intro) || "";
       adminElevationProfileImage = (siteData && siteData.weekly && siteData.weekly.elevation_profile_image) || "";
       adminAboutRiskCards = cloneValue((siteData && siteData.about && siteData.about.risk_cards) || []);
@@ -1653,7 +1695,14 @@
       siteData.weekly.route_map_url = document.getElementById("admin-weekly-route-map-url").value.trim();
       siteData.weekly.retreat_map_url = document.getElementById("admin-weekly-retreat-map-url").value.trim();
       siteData.weekly.backup_map_url = document.getElementById("admin-weekly-backup-map-url").value.trim();
+      siteData.weekly.route_brief = document.getElementById("admin-weekly-route-brief").value.trim();
+      siteData.weekly.itinerary = document.getElementById("admin-weekly-itinerary").value.trim();
+      siteData.weekly.route_items = parsePanelLines(document.getElementById("admin-weekly-route-items").value);
       siteData.weekly.elevation_profile_image = adminElevationProfileImage;
+      siteData.gear = siteData.gear || {};
+      siteData.gear.intro = document.getElementById("admin-gear-intro").value.trim();
+      siteData.gear.pills = parseLines(document.getElementById("admin-gear-pills").value);
+      siteData.gear.notes = parsePanelLines(document.getElementById("admin-gear-notes").value);
       siteData.about.intro = document.getElementById("admin-about-intro").value.trim();
       siteData.about.notes = [];
       siteData.about.risk_cards = syncAdminAboutRiskCardsFromForm();
