@@ -1074,7 +1074,22 @@
         .map(line => line.trim())
         .filter(Boolean);
 
-      el.innerHTML = lines.map(line => {
+      const mergedLines = [];
+      for (let i = 0; i < lines.length; i += 1) {
+        const line = lines[i];
+        const nextLine = lines[i + 1];
+        if (line === "0" && nextLine && /^\d/.test(nextLine)) {
+          lines[i + 1] = `0${nextLine}`;
+          continue;
+        }
+        if (line === "约" && nextLine) {
+          lines[i + 1] = `约 ${nextLine}`;
+          continue;
+        }
+        mergedLines.push(line);
+      }
+
+      el.innerHTML = mergedLines.map(line => {
         if (/^第[一二三四五六七八九十0-9]+天[:：]/.test(line)) {
           return `<div class="itinerary-day">${line}</div>`;
         }
