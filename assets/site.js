@@ -25,6 +25,7 @@ const DEPLOY_SITE_DEFAULTS = {
     meeting_place: "",
     meeting_time: "",
     leaders: WEEKLY_LEADER_ROLES.map(item => ({ ...item, name: "", phone: "" })),
+    supply_points: [],
     plate_number: "",
     drive_time: "",
     service_area: "",
@@ -215,6 +216,7 @@ function normalizeSiteData(raw) {
       ...defaults.weekly,
       ...weekly,
       leaders: normalizeLeaderList(weekly.leaders || weekly.contacts || weekly.meeting_leaders || defaults.weekly.leaders),
+      supply_points: normalizeTextList(weekly.supply_points || weekly.supplyPoints || defaults.weekly.supply_points),
       route_items: normalizePanelList(weekly.route_items || defaults.weekly.route_items),
     },
     routeLibrary: {
@@ -258,6 +260,7 @@ function normalizeSiteData(raw) {
   normalized.weekly.status_label = String(normalized.weekly.status_label || "").trim();
   normalized.weekly.meeting_place = String(normalized.weekly.meeting_place || "").trim();
   normalized.weekly.meeting_time = String(normalized.weekly.meeting_time || "").trim();
+  normalized.weekly.supply_points = normalizeTextList(normalized.weekly.supply_points);
   normalized.weekly.plate_number = String(normalized.weekly.plate_number || "").trim();
   normalized.weekly.drive_time = String(normalized.weekly.drive_time || "").trim();
   normalized.weekly.service_area = String(normalized.weekly.service_area || "").trim();

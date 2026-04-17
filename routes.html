@@ -895,6 +895,10 @@
             <label for="admin-weekly-meeting-time">集合时间</label>
             <input id="admin-weekly-meeting-time" type="text" placeholder="例如：08:30 AM · 迟到不等">
           </div>
+          <div class="admin-field full">
+            <label for="admin-weekly-supply-points">补给点，每行一条</label>
+            <textarea id="admin-weekly-supply-points" placeholder="例如：0KM：白岩村"></textarea>
+          </div>
           <div class="admin-field">
             <label for="admin-weekly-leader-front-name">前队领队姓名</label>
             <input id="admin-weekly-leader-front-name" type="text" placeholder="例如：阿杰">
@@ -1598,6 +1602,7 @@
       document.getElementById("admin-weekly-service-area").value = (siteData && siteData.weekly && siteData.weekly.service_area) || "";
       document.getElementById("admin-weekly-meeting-place").value = (siteData && siteData.weekly && siteData.weekly.meeting_place) || "";
       document.getElementById("admin-weekly-meeting-time").value = (siteData && siteData.weekly && siteData.weekly.meeting_time) || "";
+      document.getElementById("admin-weekly-supply-points").value = textLines(siteData && siteData.weekly && siteData.weekly.supply_points);
       document.getElementById("admin-weekly-plate-number").value = (siteData && siteData.weekly && siteData.weekly.plate_number) || "";
       document.getElementById("admin-weekly-route-map-url").value = (siteData && siteData.weekly && siteData.weekly.route_map_url) || "";
       document.getElementById("admin-weekly-retreat-map-url").value = (siteData && siteData.weekly && siteData.weekly.retreat_map_url) || "";
@@ -1711,6 +1716,7 @@
       siteData.weekly.service_area = document.getElementById("admin-weekly-service-area").value.trim();
       siteData.weekly.meeting_place = document.getElementById("admin-weekly-meeting-place").value.trim();
       siteData.weekly.meeting_time = document.getElementById("admin-weekly-meeting-time").value.trim();
+      siteData.weekly.supply_points = parseLines(document.getElementById("admin-weekly-supply-points").value);
       siteData.weekly.plate_number = document.getElementById("admin-weekly-plate-number").value.trim();
       siteData.weekly.route_map_url = document.getElementById("admin-weekly-route-map-url").value.trim();
       siteData.weekly.retreat_map_url = document.getElementById("admin-weekly-retreat-map-url").value.trim();

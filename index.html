@@ -914,6 +914,8 @@
           <span id="meeting-time">08:30 AM · 迟到不等</span>
         </div>
       </div>
+      <div class="meeting-subtitle" id="supply-subtitle" style="display:none">本周补给点</div>
+      <div class="panel-list" id="supply-points" style="display:none"></div>
       <div class="meeting-subtitle" id="leader-subtitle" style="display:none">领队联络</div>
       <div class="leader-grid" id="leader-grid" style="display:none"></div>
       <div class="meeting-meta">
@@ -1070,6 +1072,27 @@
       }).join("");
     }
 
+    function renderSupplyPoints(containerId, items) {
+      const el = document.getElementById(containerId);
+      const titleEl = document.getElementById("supply-subtitle");
+      if (!el) return;
+      const points = (items || []).map(item => String(item || "").trim()).filter(Boolean);
+      if (!points.length) {
+        el.style.display = "none";
+        if (titleEl) titleEl.style.display = "none";
+        el.innerHTML = "";
+        return;
+      }
+      el.style.display = "";
+      if (titleEl) titleEl.style.display = "";
+      el.innerHTML = points.map(item => `
+        <div class="panel-item">
+          <strong>${item.split(/[:：]/)[0] || "补给点"}</strong>
+          <span>${item.includes("：") ? item.split("：").slice(1).join("：") : item.split(":").slice(1).join(":") || item}</span>
+        </div>
+      `).join("");
+    }
+
     loadSiteData().then(data => {
       const featuredRouteId = String((data.site && (data.site.featured_route_id || data.site.featuredRouteId)) || "").trim();
       const weeklySceneryRoute = (data.routeLibrary.routes || []).find(route => route.id === featuredRouteId)
@@ -1098,6 +1121,7 @@
       document.getElementById("meeting-desc").textContent = data.weekly.route_brief;
       document.getElementById("route-brief").textContent = data.weekly.route_brief;
       document.getElementById("route-weather").textContent = data.weekly.weather_rule || "待填写";
+      renderSupplyPoints("supply-points", data.weekly.supply_points);
       renderLeaderGrid("leader-grid", data.weekly.leaders);
 
       const toggleBlock = (id, val) => {
