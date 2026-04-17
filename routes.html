@@ -1669,6 +1669,7 @@
       if (route.elevation) {
         siteData.weekly.elevation = route.elevation;
       }
+      siteData.weekly.weather_rule = route.weather_rule || "";
       if (setAsFeatured && route.drive_time) {
         siteData.weekly.drive_time = route.drive_time;
       }

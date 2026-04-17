@@ -939,6 +939,12 @@
       <p class="section-kicker">Tab 01</p>
       <h2 class="section-title">本周行程</h2>
       <p class="section-desc" id="route-brief">集合、强度、取消规则、风险提醒，都先在这一页解决。</p>
+      <div class="panel-list" id="route-weather-wrap" style="display:none">
+        <div class="panel-item">
+          <strong>天气规则</strong>
+          <span id="route-weather">待填写</span>
+        </div>
+      </div>
       <div class="panel-list" id="itinerary-wrap" style="display:none">
         <div class="panel-item">
           <strong>行程安排</strong>
@@ -1091,6 +1097,7 @@
       document.getElementById("mobile-plate-number").textContent = data.weekly.plate_number || "待填写";
       document.getElementById("meeting-desc").textContent = data.weekly.route_brief;
       document.getElementById("route-brief").textContent = data.weekly.route_brief;
+      document.getElementById("route-weather").textContent = data.weekly.weather_rule || "待填写";
       renderLeaderGrid("leader-grid", data.weekly.leaders);
 
       const toggleBlock = (id, val) => {
@@ -1109,6 +1116,7 @@
       toggleBlock("mobile-box-place", data.weekly.meeting_place);
       toggleBlock("mobile-box-transport", transportNote);
       toggleBlock("mobile-box-plate", data.weekly.plate_number);
+      toggleBlock("route-weather-wrap", data.weekly.weather_rule);
 
       const elevationVisual = data.weekly.elevation_profile_image || "";
       toggleBlock("elevation-visual", elevationVisual);

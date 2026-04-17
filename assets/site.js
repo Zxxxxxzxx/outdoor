@@ -28,6 +28,7 @@ const DEPLOY_SITE_DEFAULTS = {
     plate_number: "",
     drive_time: "",
     service_area: "",
+    weather_rule: "",
     route_brief: "",
     itinerary: "",
     route_map_url: "",
@@ -260,6 +261,7 @@ function normalizeSiteData(raw) {
   normalized.weekly.plate_number = String(normalized.weekly.plate_number || "").trim();
   normalized.weekly.drive_time = String(normalized.weekly.drive_time || "").trim();
   normalized.weekly.service_area = String(normalized.weekly.service_area || "").trim();
+  normalized.weekly.weather_rule = String(normalized.weekly.weather_rule || "").trim();
   normalized.weekly.route_brief = String(normalized.weekly.route_brief || "").trim();
   normalized.weekly.itinerary = String(normalized.weekly.itinerary || "").trim();
   normalized.weekly.route_map_url = String(normalized.weekly.route_map_url || "").trim();
