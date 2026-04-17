@@ -1,13 +1,14 @@
 {
   "site": {
-    "title": "杭州西湖线test",
+    "title": "韩妃江古道",
     "kicker": "Huadong Outdoor Library",
-    "note": "西湖爱心线（可中途下撤）"
+    "note": "绍兴新昌县",
+    "featured_route_id": "route_1776060378261_copy"
   },
   "weekly": {
     "date": "2026 / 04 / 18 · 周六",
-    "summary": "轻装一日徒步，适合新手与进阶混编队伍。",
-    "difficulty": "★★★★☆",
+    "summary": "我是帅哥4号",
+    "difficulty": "★☆☆☆☆",
     "difficulty_label": "中等",
     "mileage": "20km",
     "mileage_label": "轻装往返",
@@ -63,7 +64,7 @@
     "cta_primary_href": "test_huadong_routes.html",
     "cta_secondary_label": "打开装备页",
     "cta_secondary_href": "#panel-gear",
-    "destination": "杭州西湖线test",
+    "destination": "韩妃江古道",
     "elevation_map_url": "",
     "elevation_profile_image": ""
   },
