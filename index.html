@@ -287,6 +287,10 @@
       font-size: 13px;
       color: var(--muted);
     }
+    .panel-item.preformatted span {
+      white-space: pre-line;
+      word-break: break-word;
+    }
     .meeting-box.primary span {
       color: var(--ink);
       font-size: 16px;
@@ -376,6 +380,37 @@
       color: var(--muted);
       letter-spacing: 0.04em;
       font-weight: 700;
+    }
+    .supply-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .supply-point {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .supply-point strong {
+      display: block;
+      margin: 0;
+      color: var(--caramel-deep);
+      font-size: 13px;
+      line-height: 1.45;
+      letter-spacing: 0.01em;
+    }
+    .supply-point span {
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.7;
+      word-break: break-word;
     }
     .leader-grid {
       display: grid;
@@ -764,6 +799,15 @@
       .meeting-grid,
       .meeting-meta { display: none; }
       .meeting-subtitle { margin-top: 12px; font-size: 11px; }
+      .supply-list { margin-top: 10px; gap: 8px; }
+      .supply-point {
+        grid-template-columns: 92px 1fr;
+        gap: 8px;
+        padding: 12px 13px;
+        border-radius: 14px;
+      }
+      .supply-point strong,
+      .supply-point span { font-size: 12px; line-height: 1.6; }
       .leader-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
       .leader-card { padding: 14px 15px; }
       .leader-name { font-size: 14px; }
@@ -806,22 +850,19 @@
         border-radius: 22px;
       }
       .tabbar-grid {
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
       }
-      .tabbar-grid::-webkit-scrollbar { display: none; }
       .tab {
-        flex: 0 0 auto;
-        min-width: 122px;
-        min-height: 46px;
-        padding: 8px 12px;
-        text-align: left;
+        min-width: 0;
+        min-height: 44px;
+        padding: 7px 6px;
+        border-radius: 14px;
+        text-align: center;
       }
-      .tab strong { font-size: 12px; }
-      .tab span { margin-top: 3px; font-size: 10px; }
+      .tab strong { font-size: 11px; }
+      .tab span { margin-top: 2px; font-size: 9px; }
     }
     @media (max-width: 520px) {
       .mobile-brief-grid { grid-template-columns: 1fr; }
@@ -914,10 +955,10 @@
           <span id="meeting-time">08:30 AM · 迟到不等</span>
         </div>
       </div>
-      <div class="meeting-subtitle" id="supply-subtitle" style="display:none">本周补给点</div>
-      <div class="panel-list" id="supply-points" style="display:none"></div>
       <div class="meeting-subtitle" id="leader-subtitle" style="display:none">领队联络</div>
       <div class="leader-grid" id="leader-grid" style="display:none"></div>
+      <div class="meeting-subtitle" id="supply-subtitle" style="display:none">本周补给点</div>
+      <div class="supply-list" id="supply-points" style="display:none"></div>
       <div class="meeting-meta">
         <div class="meeting-box meta" id="box-drive-service">
           <div class="meeting-label">
@@ -942,7 +983,7 @@
       <h2 class="section-title">本周行程</h2>
       <p class="section-desc" id="route-brief">集合、强度、取消规则、风险提醒，都先在这一页解决。</p>
       <div class="panel-list" id="route-weather-wrap" style="display:none">
-        <div class="panel-item">
+        <div class="panel-item preformatted">
           <strong>天气规则</strong>
           <span id="route-weather">待填写</span>
         </div>
@@ -1086,7 +1127,7 @@
       el.style.display = "";
       if (titleEl) titleEl.style.display = "";
       el.innerHTML = points.map(item => `
-        <div class="panel-item">
+        <div class="supply-point">
           <strong>${item.split(/[:：]/)[0] || "补给点"}</strong>
           <span>${item.includes("：") ? item.split("：").slice(1).join("：") : item.split(":").slice(1).join(":") || item}</span>
         </div>
