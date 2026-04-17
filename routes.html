@@ -1598,6 +1598,51 @@
       adminAboutRiskCards = [];
     }
 
+    function isHomepageRoute(route) {
+      if (!route || !siteData) return false;
+      const featuredRouteId = String((siteData.site && siteData.site.featured_route_id) || "").trim();
+      if (featuredRouteId) {
+        return String(route.id || "").trim() === featuredRouteId;
+      }
+      const homepageTitle = String((siteData.site && siteData.site.title) || "").trim();
+      return Boolean(homepageTitle) && String(route.name || "").trim() === homepageTitle;
+    }
+
+    function syncHomepageFieldsFromRoute(route, options = {}) {
+      if (!route || !siteData) return;
+      const { setAsFeatured = false } = options;
+      if (!setAsFeatured && !isHomepageRoute(route)) return;
+
+      siteData.site = siteData.site || {};
+      siteData.weekly = siteData.weekly || {};
+
+      if (setAsFeatured && route.id) {
+        siteData.site.featured_route_id = route.id;
+      }
+      if (route.name) {
+        siteData.site.title = route.name;
+        siteData.weekly.destination = route.name;
+      }
+      if (setAsFeatured && route.region) {
+        siteData.site.note = route.region;
+      }
+      if (route.review && route.review.summary) {
+        siteData.weekly.summary = route.review.summary;
+      }
+      if (route.difficulty) {
+        siteData.weekly.difficulty = route.difficulty;
+      }
+      if (route.distance) {
+        siteData.weekly.mileage = route.distance;
+      }
+      if (route.elevation) {
+        siteData.weekly.elevation = route.elevation;
+      }
+      if (route.drive_time) {
+        siteData.weekly.drive_time = route.drive_time;
+      }
+    }
+
     function applyAdminDraftToSiteData(renderUi = true) {
       const route = getActiveRoute();
       const draft = syncAdminDraftFromForm();
@@ -1644,6 +1689,7 @@
       siteData.about.intro = document.getElementById("admin-about-intro").value.trim();
       siteData.about.notes = [];
       siteData.about.risk_cards = syncAdminAboutRiskCardsFromForm();
+      syncHomepageFieldsFromRoute(draft);
       siteData = normalizeSiteData(siteData);
       routes = siteData.routeLibrary.routes || [];
       activeRouteId = draft.id;
@@ -1746,29 +1792,7 @@
         return;
       }
 
-      siteData.site = siteData.site || {};
-      siteData.weekly = siteData.weekly || {};
-      siteData.site.title = route.name || siteData.site.title || "";
-      siteData.site.featured_route_id = route.id || "";
-      if (route.region) {
-        siteData.site.note = route.region;
-      }
-      if (route.review && route.review.summary) {
-        siteData.weekly.summary = route.review.summary;
-      }
-      if (route.difficulty) {
-        siteData.weekly.difficulty = route.difficulty;
-      }
-      if (route.distance) {
-        siteData.weekly.mileage = route.distance;
-      }
-      if (route.elevation) {
-        siteData.weekly.elevation = route.elevation;
-      }
-      if (route.drive_time) {
-        siteData.weekly.drive_time = route.drive_time;
-      }
-      siteData.weekly.destination = route.name || siteData.weekly.destination || "";
+      syncHomepageFieldsFromRoute(route, { setAsFeatured: true });
       siteData = normalizeSiteData(siteData);
       routes = siteData.routeLibrary.routes || [];
       activeRouteId = route.id;
