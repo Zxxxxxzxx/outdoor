@@ -828,6 +828,14 @@
       <div class="admin-section">
         <div class="admin-subtitle">集合指令与路线图</div>
         <div class="admin-form">
+          <div class="admin-field full">
+            <label for="admin-weekly-meeting-place">集合点</label>
+            <input id="admin-weekly-meeting-place" type="text" placeholder="例如：德清高铁站 2 号口 · 到站后统一上车">
+          </div>
+          <div class="admin-field full">
+            <label for="admin-weekly-meeting-time">集合时间</label>
+            <input id="admin-weekly-meeting-time" type="text" placeholder="例如：08:30 AM · 迟到不等">
+          </div>
           <div class="admin-field">
             <label for="admin-weekly-leader-front-name">前队领队姓名</label>
             <input id="admin-weekly-leader-front-name" type="text" placeholder="例如：阿杰">
@@ -1009,6 +1017,7 @@
   <script>
     const ADMIN_FLAG_KEY = "huadong_routes_admin_enabled";
     const ADMIN_SETTINGS_KEY = "huadong_routes_github_settings_v1";
+    const ADMIN_SITE_DRAFT_KEY = "huadong_routes_site_draft_v1";
     const ADMIN_DEFAULT_SETTINGS = {
       owner: "Zxxxxxzxx",
       repo: "outdoor",
@@ -1025,6 +1034,7 @@
     let adminDraft = null;
     let adminElevationProfileImage = "";
     let adminAboutRiskCards = [];
+    let adminDraftSaveTimer = null;
 
     const adminFab = document.getElementById("admin-fab");
     const adminOverlay = document.getElementById("admin-overlay");
@@ -1061,6 +1071,27 @@
       adminStatus.dataset.tone = tone;
     }
 
+    function readAdminSiteDraft() {
+      try {
+        const raw = localStorage.getItem(ADMIN_SITE_DRAFT_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object" || !parsed.siteData) return null;
+        return parsed;
+      } catch (err) {
+        console.warn("读取线路草稿失败", err);
+        return null;
+      }
+    }
+
+    function writeAdminSiteDraft(state) {
+      localStorage.setItem(ADMIN_SITE_DRAFT_KEY, JSON.stringify(state));
+    }
+
+    function clearAdminSiteDraft() {
+      localStorage.removeItem(ADMIN_SITE_DRAFT_KEY);
+    }
+
     function updateAdminEntry() {
       const enabled = isAdminEnabled();
       adminFab.style.display = enabled ? "" : "none";
@@ -1069,6 +1100,18 @@
 
     function getActiveRoute() {
       return routes.find(item => item.id === activeRouteId) || routes[0] || null;
+    }
+
+    function persistCurrentSiteDraft(statusText) {
+      if (!siteData) return false;
+      writeAdminSiteDraft({
+        savedAt: Date.now(),
+        activeRegion,
+        activeRouteId,
+        siteData: normalizeSiteData(siteData),
+      });
+      if (statusText) setAdminStatus(statusText, "success");
+      return true;
     }
 
     function textLines(value) {
@@ -1440,6 +1483,8 @@
       document.getElementById("admin-weekly-leader-middle-phone").value = leaderMiddle.phone || "";
       document.getElementById("admin-weekly-leader-rear-name").value = leaderRear.name || "";
       document.getElementById("admin-weekly-leader-rear-phone").value = leaderRear.phone || "";
+      document.getElementById("admin-weekly-meeting-place").value = (siteData && siteData.weekly && siteData.weekly.meeting_place) || "";
+      document.getElementById("admin-weekly-meeting-time").value = (siteData && siteData.weekly && siteData.weekly.meeting_time) || "";
       document.getElementById("admin-weekly-plate-number").value = (siteData && siteData.weekly && siteData.weekly.plate_number) || "";
       document.getElementById("admin-weekly-route-map-url").value = (siteData && siteData.weekly && siteData.weekly.route_map_url) || "";
       document.getElementById("admin-weekly-retreat-map-url").value = (siteData && siteData.weekly && siteData.weekly.retreat_map_url) || "";
@@ -1469,6 +1514,79 @@
       adminDraft = null;
       adminElevationProfileImage = "";
       adminAboutRiskCards = [];
+    }
+
+    function applyAdminDraftToSiteData(renderUi = true) {
+      const route = getActiveRoute();
+      const draft = syncAdminDraftFromForm();
+      if (!route || !draft || !siteData) return null;
+
+      const index = siteData.routeLibrary.routes.findIndex(item => item.id === route.id);
+      if (index === -1) return null;
+
+      siteData.routeLibrary.routes[index] = draft;
+      siteData.weekly.leaders = [
+        {
+          key: "front",
+          role: "前队",
+          name: document.getElementById("admin-weekly-leader-front-name").value.trim(),
+          phone: document.getElementById("admin-weekly-leader-front-phone").value.trim(),
+        },
+        {
+          key: "middle",
+          role: "中队",
+          name: document.getElementById("admin-weekly-leader-middle-name").value.trim(),
+          phone: document.getElementById("admin-weekly-leader-middle-phone").value.trim(),
+        },
+        {
+          key: "rear",
+          role: "后队",
+          name: document.getElementById("admin-weekly-leader-rear-name").value.trim(),
+          phone: document.getElementById("admin-weekly-leader-rear-phone").value.trim(),
+        },
+      ];
+      siteData.weekly.meeting_place = document.getElementById("admin-weekly-meeting-place").value.trim();
+      siteData.weekly.meeting_time = document.getElementById("admin-weekly-meeting-time").value.trim();
+      siteData.weekly.plate_number = document.getElementById("admin-weekly-plate-number").value.trim();
+      siteData.weekly.route_map_url = document.getElementById("admin-weekly-route-map-url").value.trim();
+      siteData.weekly.retreat_map_url = document.getElementById("admin-weekly-retreat-map-url").value.trim();
+      siteData.weekly.backup_map_url = document.getElementById("admin-weekly-backup-map-url").value.trim();
+      siteData.weekly.route_brief = document.getElementById("admin-weekly-route-brief").value.trim();
+      siteData.weekly.itinerary = document.getElementById("admin-weekly-itinerary").value.trim();
+      siteData.weekly.route_items = parsePanelLines(document.getElementById("admin-weekly-route-items").value);
+      siteData.weekly.elevation_profile_image = adminElevationProfileImage;
+      siteData.gear = siteData.gear || {};
+      siteData.gear.intro = document.getElementById("admin-gear-intro").value.trim();
+      siteData.gear.pills = parseLines(document.getElementById("admin-gear-pills").value);
+      siteData.gear.notes = parsePanelLines(document.getElementById("admin-gear-notes").value);
+      siteData.about.intro = document.getElementById("admin-about-intro").value.trim();
+      siteData.about.notes = [];
+      siteData.about.risk_cards = syncAdminAboutRiskCardsFromForm();
+      siteData = normalizeSiteData(siteData);
+      routes = siteData.routeLibrary.routes || [];
+      activeRouteId = draft.id;
+
+      if (activeRegion !== "全部" && !getVisibleRoutes().find(item => item.id === activeRouteId)) {
+        activeRegion = "全部";
+      }
+
+      if (renderUi) {
+        document.getElementById("route-library-intro").textContent = siteData.routeLibrary.intro || "";
+        renderFilters();
+        renderRouteList();
+        renderDetail();
+      }
+      return draft;
+    }
+
+    function scheduleAdminDraftSave() {
+      if (!adminDraft || adminOverlay.hidden) return;
+      clearTimeout(adminDraftSaveTimer);
+      adminDraftSaveTimer = setTimeout(() => {
+        const draft = applyAdminDraftToSiteData(false);
+        if (!draft) return;
+        persistCurrentSiteDraft();
+      }, 300);
     }
 
     function createRouteIdSeed(value) {
@@ -1523,6 +1641,7 @@
       renderFilters();
       renderRouteList();
       renderDetail();
+      persistCurrentSiteDraft();
       openAdminModal();
       if (statusText) setAdminStatus(statusText, "success");
     }
@@ -1579,6 +1698,7 @@
       renderFilters();
       renderRouteList();
       renderDetail();
+      persistCurrentSiteDraft();
       setAdminStatus("已删除当前线路。记得点“保存并发布到公网”才会同步到正式站。", "success");
     }
 
@@ -1663,61 +1783,9 @@
     }
 
     function applyAdminDraftToPage() {
-      const route = getActiveRoute();
-      const draft = syncAdminDraftFromForm();
-      if (!route || !draft || !siteData) return null;
-
-      const index = siteData.routeLibrary.routes.findIndex(item => item.id === route.id);
-      if (index === -1) return null;
-
-      siteData.routeLibrary.routes[index] = draft;
-      siteData.weekly.leaders = [
-        {
-          key: "front",
-          role: "前队",
-          name: document.getElementById("admin-weekly-leader-front-name").value.trim(),
-          phone: document.getElementById("admin-weekly-leader-front-phone").value.trim(),
-        },
-        {
-          key: "middle",
-          role: "中队",
-          name: document.getElementById("admin-weekly-leader-middle-name").value.trim(),
-          phone: document.getElementById("admin-weekly-leader-middle-phone").value.trim(),
-        },
-        {
-          key: "rear",
-          role: "后队",
-          name: document.getElementById("admin-weekly-leader-rear-name").value.trim(),
-          phone: document.getElementById("admin-weekly-leader-rear-phone").value.trim(),
-        },
-      ];
-      siteData.weekly.plate_number = document.getElementById("admin-weekly-plate-number").value.trim();
-      siteData.weekly.route_map_url = document.getElementById("admin-weekly-route-map-url").value.trim();
-      siteData.weekly.retreat_map_url = document.getElementById("admin-weekly-retreat-map-url").value.trim();
-      siteData.weekly.backup_map_url = document.getElementById("admin-weekly-backup-map-url").value.trim();
-      siteData.weekly.route_brief = document.getElementById("admin-weekly-route-brief").value.trim();
-      siteData.weekly.itinerary = document.getElementById("admin-weekly-itinerary").value.trim();
-      siteData.weekly.route_items = parsePanelLines(document.getElementById("admin-weekly-route-items").value);
-      siteData.weekly.elevation_profile_image = adminElevationProfileImage;
-      siteData.gear = siteData.gear || {};
-      siteData.gear.intro = document.getElementById("admin-gear-intro").value.trim();
-      siteData.gear.pills = parseLines(document.getElementById("admin-gear-pills").value);
-      siteData.gear.notes = parsePanelLines(document.getElementById("admin-gear-notes").value);
-      siteData.about.intro = document.getElementById("admin-about-intro").value.trim();
-      siteData.about.notes = [];
-      siteData.about.risk_cards = syncAdminAboutRiskCardsFromForm();
-      siteData = normalizeSiteData(siteData);
-      routes = siteData.routeLibrary.routes || [];
-      activeRouteId = draft.id;
-
-      if (activeRegion !== "全部" && !getVisibleRoutes().find(item => item.id === activeRouteId)) {
-        activeRegion = "全部";
-      }
-
-      document.getElementById("route-library-intro").textContent = siteData.routeLibrary.intro || "";
-      renderFilters();
-      renderRouteList();
-      renderDetail();
+      const draft = applyAdminDraftToSiteData(true);
+      if (!draft) return null;
+      persistCurrentSiteDraft();
       return draft;
     }
 
