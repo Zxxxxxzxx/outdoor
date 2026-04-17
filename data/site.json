@@ -13,7 +13,7 @@
     "mileage": "11km",
     "mileage_label": "轻装往返",
     "elevation": "280m+",
-    "elevation_label": "四上四下",
+    "elevation_label": "下-平-上",
     "status": "报名中",
     "status_label": "余位可报",
     "meeting_place": "浦东新区世纪大道地铁站12号口",
@@ -45,7 +45,7 @@
       "9-9.2KM:白岩村"
     ],
     "plate_number": "沪GG0119",
-    "drive_time": "5h",
+    "drive_time": "3h",
     "service_area": "嘉绍20min",
     "weather_rule": "时段\t天气\t气温\t风力\t出行建议\t\n凌晨-早间（2-8点）\t小雨/阴天\t15-16℃\t1-3级\t早出发需备薄外套，路面可能微湿，注意防滑\t\n上午（8-11点）\t多云转晴\t16-18℃\t2-3级\t气温回升，体感舒适，适合热身、起步\t\n午后（11-17点）\t晴间多云\t18-22℃\t3-4级\t体感最舒适时段，紫外线中等，建议做好防晒\t\n傍晚-夜间（17点后）\t多云\t13-16℃\t1-2级\t气温快速回落，下山/返程需及时添衣",
     "route_brief": "集合、强度、取消规则、风险提醒，都先在这一页解决。",
