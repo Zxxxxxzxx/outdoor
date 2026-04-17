@@ -641,12 +641,25 @@
       color: var(--muted);
       letter-spacing: 0.04em;
     }
-    .risk-row span {
+    .risk-row-value {
+      min-width: 0;
+    }
+    .risk-row-text {
       color: var(--ink);
       font-size: 13px;
       line-height: 1.7;
       white-space: pre-line;
       word-break: break-word;
+    }
+    .risk-line-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .risk-line-list li + li {
+      margin-top: 4px;
     }
     .gallery-grid {
       margin-top: 16px;

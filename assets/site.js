@@ -291,6 +291,32 @@ function renderPanelList(containerId, items) {
   `).join("");
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function renderRiskValue(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  const lines = text
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+  if (lines.length <= 1) {
+    return `<span class="risk-row-text">${escapeHtml(text)}</span>`;
+  }
+  return `
+    <ul class="risk-line-list">
+      ${lines.map(line => `<li>${escapeHtml(line)}</li>`).join("")}
+    </ul>
+  `;
+}
+
 function renderRiskCards(containerId, items) {
   const el = document.getElementById(containerId);
   if (!el) return;
@@ -306,9 +332,9 @@ function renderRiskCards(containerId, items) {
           </div>
         </div>
         <div class="risk-card-copy">
-          ${item.scene_trigger ? `<div class="risk-row"><strong>常见场景 / 诱因</strong><span>${item.scene_trigger}</span></div>` : ""}
-          ${item.prevention ? `<div class="risk-row"><strong>预防措施</strong><span>${item.prevention}</span></div>` : ""}
-          ${item.response ? `<div class="risk-row"><strong>自救及处理</strong><span>${item.response}</span></div>` : ""}
+          ${item.scene_trigger ? `<div class="risk-row"><strong>常见场景 / 诱因</strong><div class="risk-row-value">${renderRiskValue(item.scene_trigger)}</div></div>` : ""}
+          ${item.prevention ? `<div class="risk-row"><strong>预防措施</strong><div class="risk-row-value">${renderRiskValue(item.prevention)}</div></div>` : ""}
+          ${item.response ? `<div class="risk-row"><strong>自救及处理</strong><div class="risk-row-value">${renderRiskValue(item.response)}</div></div>` : ""}
         </div>
       </div>
     </article>
