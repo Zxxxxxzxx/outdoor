@@ -91,9 +91,28 @@ function normalizeLeaderList(value) {
   });
 }
 
+function normalizeBooleanFlag(value) {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value !== 0;
+  const text = String(value || "").trim().toLowerCase();
+  return ["1", "true", "yes", "y", "on"].includes(text);
+}
+
+function orderPinnedFirst(items) {
+  if (!Array.isArray(items)) return [];
+  return items
+    .map((item, index) => ({ ...(item || {}), __order: index }))
+    .sort((left, right) => {
+      const pinDiff = Number(Boolean(right && right.pinned)) - Number(Boolean(left && left.pinned));
+      if (pinDiff !== 0) return pinDiff;
+      return (left && left.__order || 0) - (right && right.__order || 0);
+    })
+    .map(({ __order, ...item }) => item);
+}
+
 function normalizeRiskCardList(value) {
   if (!Array.isArray(value)) return [];
-  return value
+  return orderPinnedFirst(value
     .map((item, index) => ({
       id: String((item && item.id) || `risk_${index + 1}`).trim(),
       title: String((item && (item.title || item.name)) || "").trim(),
@@ -102,8 +121,9 @@ function normalizeRiskCardList(value) {
       prevention: String((item && (item.prevention || item.preventive_measures)) || "").trim(),
       response: String((item && (item.response || item.self_help || item.treatment || item.handling)) || "").trim(),
       image: String((item && (item.image || item.src || item.photo)) || "").trim(),
+      pinned: normalizeBooleanFlag(item && (item.pinned || item.is_pinned || item.isPinned || item.top)),
     }))
-    .filter(item => item.title || item.risk_type || item.scene_trigger || item.prevention || item.response || item.image);
+    .filter(item => item.title || item.risk_type || item.scene_trigger || item.prevention || item.response || item.image));
 }
 
 function normalizeGallery(value) {
@@ -132,6 +152,14 @@ function normalizeRoute(route) {
     elevation: String(source.elevation || "").trim(),
     duration: String(source.estimated_time || source.duration || "").trim(),
     suitable: String(source.suitable || "").trim(),
+    road_condition: String(
+      source.road_condition ||
+      source.roadCondition ||
+      source.route_condition ||
+      source.routeCondition ||
+      source.trail_condition ||
+      ""
+    ).trim(),
     weather_rule: String(source.weather_rule || "").trim(),
     prep: normalizeTextList(source.prep),
     risks: normalizeTextList(source.risks),
@@ -260,13 +288,16 @@ function renderPanelList(containerId, items) {
 function renderRiskCards(containerId, items) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  el.innerHTML = (items || []).map(item => `
+  el.innerHTML = orderPinnedFirst(items || []).map(item => `
     <article class="risk-card ${item.image ? "" : "no-media"}">
       ${item.image ? `<img class="risk-card-media" src="${item.image}" alt="${item.title || "常见风险"}">` : ""}
       <div class="risk-card-body">
         <div class="risk-card-head">
           <strong class="risk-card-title">${item.title || "未命名风险"}</strong>
-          ${item.risk_type ? `<span class="risk-card-tag">${item.risk_type}</span>` : ""}
+          <div class="risk-card-tags">
+            ${item.pinned ? `<span class="risk-card-tag risk-card-tag-pin">置顶</span>` : ""}
+            ${item.risk_type ? `<span class="risk-card-tag">${item.risk_type}</span>` : ""}
+          </div>
         </div>
         <div class="risk-card-copy">
           ${item.scene_trigger ? `<div class="risk-row"><strong>常见场景 / 诱因</strong><span>${item.scene_trigger}</span></div>` : ""}

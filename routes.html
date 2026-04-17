@@ -210,7 +210,7 @@
     }
     .metric-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 10px;
       margin-bottom: 16px;
     }
@@ -482,6 +482,13 @@
       align-items: center;
       margin-bottom: 12px;
     }
+    .admin-risk-head-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
     .admin-risk-label {
       font-size: 14px;
       letter-spacing: -0.02em;
@@ -720,6 +727,14 @@
             <div class="metric-value" id="detail-estimated-time">6-7h</div>
           </div>
           <div class="metric">
+            <div class="metric-label">线路里程</div>
+            <div class="metric-value" id="detail-distance">待填写</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">累计爬升</div>
+            <div class="metric-value" id="detail-elevation">待填写</div>
+          </div>
+          <div class="metric">
             <div class="metric-label">适合人群</div>
             <div class="metric-value" id="detail-suitable" style="font-size:14px">新手可报</div>
           </div>
@@ -728,6 +743,11 @@
         <div class="block">
           <h4>天气规则</h4>
           <p id="detail-weather">雷暴、强对流、连续暴雨后取消；高温天缩线。</p>
+        </div>
+
+        <div class="block">
+          <h4>路况情况</h4>
+          <p id="detail-road-condition">以石阶、林道和土路为主，雨后湿滑时需要主动控速。</p>
         </div>
 
         <div class="block">
@@ -796,8 +816,20 @@
           <input id="admin-route-estimated-time" type="text">
         </div>
         <div class="admin-field">
+          <label for="admin-route-distance">线路里程</label>
+          <input id="admin-route-distance" type="text" placeholder="例如：12km">
+        </div>
+        <div class="admin-field">
+          <label for="admin-route-elevation">累计爬升</label>
+          <input id="admin-route-elevation" type="text" placeholder="例如：800m+">
+        </div>
+        <div class="admin-field">
           <label for="admin-route-suitable">适合人群</label>
           <input id="admin-route-suitable" type="text">
+        </div>
+        <div class="admin-field full">
+          <label for="admin-route-road-condition">路况情况</label>
+          <textarea id="admin-route-road-condition" placeholder="例如：前段机耕路，中段石阶，后段林下土路；雨后石阶和碎石下坡明显更滑。"></textarea>
         </div>
         <div class="admin-field full">
           <label for="admin-route-weather">天气规则</label>
@@ -1174,6 +1206,7 @@
         prevention: "",
         response: "",
         image: "",
+        pinned: false,
         ...overrides,
       };
     }
@@ -1187,6 +1220,7 @@
         prevention: card.querySelector('[data-field="prevention"]')?.value.trim() || "",
         response: card.querySelector('[data-field="response"]')?.value.trim() || "",
         image: card.dataset.image || "",
+        pinned: Boolean(card.querySelector(".admin-risk-pin")?.checked),
       }));
       adminAboutRiskCards = normalizeRiskCardList(cards);
       return adminAboutRiskCards;
@@ -1195,6 +1229,7 @@
     function renderAdminRiskCards() {
       const el = document.getElementById("admin-about-risk-cards");
       if (!el) return;
+      adminAboutRiskCards = orderPinnedFirst(adminAboutRiskCards);
       if (!adminAboutRiskCards.length) {
         el.innerHTML = `<div class="admin-gallery-empty">当前还没有详细风险卡片。点上面的按钮就可以新增。</div>`;
         return;
@@ -1204,7 +1239,13 @@
         <div class="admin-risk-card" data-index="${index}" data-id="${escapeAttr(card.id || "")}" data-image="${escapeAttr(card.image || "")}">
           <div class="admin-risk-head">
             <div class="admin-risk-label">${escapeHtml(card.title || `风险卡片 ${index + 1}`)}</div>
-            <button class="admin-btn danger admin-risk-remove" type="button" data-index="${index}">删除卡片</button>
+            <div class="admin-risk-head-actions">
+              <label class="admin-check">
+                <input class="admin-risk-pin" type="checkbox" data-index="${index}" ${card.pinned ? "checked" : ""}>
+                置顶
+              </label>
+              <button class="admin-btn danger admin-risk-remove" type="button" data-index="${index}">删除卡片</button>
+            </div>
           </div>
           <div class="admin-risk-layout">
             <div class="admin-risk-media">
@@ -1251,6 +1292,18 @@
             label.textContent = event.target.value.trim() || `风险卡片 ${index + 1}`;
           }
           scheduleAdminDraftSave();
+        });
+      });
+
+      [...el.querySelectorAll(".admin-risk-pin")].forEach(input => {
+        input.addEventListener("change", event => {
+          const index = Number(event.target.dataset.index);
+          if (!adminAboutRiskCards[index]) return;
+          adminAboutRiskCards[index].pinned = event.target.checked;
+          adminAboutRiskCards = orderPinnedFirst(adminAboutRiskCards);
+          renderAdminRiskCards();
+          scheduleAdminDraftSave();
+          setAdminStatus(event.target.checked ? "已置顶这张风险卡片。" : "已取消这张风险卡片置顶。", "success");
         });
       });
 
@@ -1471,7 +1524,10 @@
       document.getElementById("admin-route-difficulty").value = adminDraft.difficulty || "";
       document.getElementById("admin-route-drive-time").value = adminDraft.drive_time || "";
       document.getElementById("admin-route-estimated-time").value = adminDraft.estimated_time || adminDraft.duration || "";
+      document.getElementById("admin-route-distance").value = adminDraft.distance || "";
+      document.getElementById("admin-route-elevation").value = adminDraft.elevation || "";
       document.getElementById("admin-route-suitable").value = adminDraft.suitable || "";
+      document.getElementById("admin-route-road-condition").value = adminDraft.road_condition || "";
       document.getElementById("admin-route-weather").value = adminDraft.weather_rule || "";
       document.getElementById("admin-route-prep").value = textLines(adminDraft.prep);
       document.getElementById("admin-route-risks").value = textLines(adminDraft.risks);
@@ -1627,6 +1683,7 @@
         elevation: "",
         duration: "",
         suitable: "",
+        road_condition: "",
         weather_rule: "",
         prep: [],
         risks: [],
@@ -1774,7 +1831,10 @@
         drive_time: document.getElementById("admin-route-drive-time").value.trim(),
         estimated_time: document.getElementById("admin-route-estimated-time").value.trim(),
         duration: document.getElementById("admin-route-estimated-time").value.trim(),
+        distance: document.getElementById("admin-route-distance").value.trim(),
+        elevation: document.getElementById("admin-route-elevation").value.trim(),
         suitable: document.getElementById("admin-route-suitable").value.trim(),
+        road_condition: document.getElementById("admin-route-road-condition").value.trim(),
         weather_rule: document.getElementById("admin-route-weather").value.trim(),
         prep: parseLines(document.getElementById("admin-route-prep").value),
         risks: parseLines(document.getElementById("admin-route-risks").value),
@@ -1829,27 +1889,152 @@
       return canvas.toDataURL("image/jpeg", 0.82);
     }
 
-    function encodeGithubPath(path) {
-      return String(path || "")
-        .split("/")
-        .map(part => encodeURIComponent(part))
-        .join("/");
+    function estimateUtf8Bytes(text) {
+      return new TextEncoder().encode(String(text || "")).length;
     }
 
-    function encodeBase64Utf8(text) {
-      const bytes = new TextEncoder().encode(text);
-      let binary = "";
-      const chunkSize = 0x8000;
-      for (let i = 0; i < bytes.length; i += chunkSize) {
-        const chunk = bytes.subarray(i, i + chunkSize);
-        binary += String.fromCharCode.apply(null, Array.from(chunk));
+    async function parseGithubResponse(resp) {
+      const text = await resp.text();
+      if (!text) return {};
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        return { message: text };
       }
-      return btoa(binary);
     }
 
-    function isGithubShaConflict(message) {
+    function formatGithubErrorMessage(status, data) {
+      const baseMessage = (data && data.message) || `GitHub 请求失败（${status}）`;
+      if (status === 401) {
+        return "GitHub token 无效、过期，或者没有被当前浏览器正确保存。";
+      }
+      if (status === 403) {
+        return `${baseMessage}。确认 token 具备仓库 Contents: write 权限，并且目标分支允许直接推送。`;
+      }
+      if (status === 404) {
+        return `${baseMessage}。确认 owner、repo、branch、path 填写正确，并且 token 对这个仓库有访问权限。`;
+      }
+      if (status === 422) {
+        return `${baseMessage}。常见原因是分支保护、提交内容不合法，或者当前分支引用已变化。`;
+      }
+      if (data && Array.isArray(data.errors) && data.errors.length) {
+        const detail = data.errors
+          .map(item => {
+            if (typeof item === "string") return item;
+            return [item.resource, item.field, item.code].filter(Boolean).join(" ");
+          })
+          .filter(Boolean)
+          .join("；");
+        if (detail) {
+          return `${data.message || "GitHub 请求失败"}：${detail}`;
+        }
+      }
+      return (data && data.message) || `GitHub 请求失败（${status}）`;
+    }
+
+    async function requestGithubJson(url, options = {}) {
+      const resp = await fetch(url, options);
+      const data = await parseGithubResponse(resp);
+      if (!resp.ok) {
+        const err = new Error(formatGithubErrorMessage(resp.status, data));
+        err.status = resp.status;
+        err.data = data;
+        throw err;
+      }
+      return data;
+    }
+
+    function isGithubPublishConflict(message) {
       const text = String(message || "").toLowerCase();
-      return text.includes("does not match") || (text.includes("sha") && text.includes("match"));
+      return (
+        text.includes("does not match") ||
+        (text.includes("sha") && text.includes("match")) ||
+        text.includes("not a fast forward") ||
+        text.includes("fast-forward") ||
+        text.includes("reference update failed")
+      );
+    }
+
+    async function commitSiteDataViaGitApi(settings, siteJson, message) {
+      const repoBase = `https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}`;
+      const ref = `heads/${String(settings.branch || "").trim()}`;
+      const headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": `Bearer ${settings.token}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+      };
+
+      const branchRef = await requestGithubJson(`${repoBase}/git/ref/${ref}`, {
+        headers,
+      });
+      const headSha = branchRef && branchRef.object && branchRef.object.sha;
+      if (!headSha) {
+        throw new Error("读取当前分支失败，没拿到最新提交 SHA。");
+      }
+
+      const currentCommit = await requestGithubJson(`${repoBase}/git/commits/${encodeURIComponent(headSha)}`, {
+        headers,
+      });
+      const currentTreeSha = currentCommit && currentCommit.tree && currentCommit.tree.sha;
+      if (!currentTreeSha) {
+        throw new Error("读取当前提交树失败，没拿到 tree SHA。");
+      }
+
+      const blob = await requestGithubJson(`${repoBase}/git/blobs`, {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: siteJson,
+          encoding: "utf-8",
+        }),
+      });
+
+      const tree = await requestGithubJson(`${repoBase}/git/trees`, {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          base_tree: currentTreeSha,
+          tree: [
+            {
+              path: settings.path,
+              mode: "100644",
+              type: "blob",
+              sha: blob.sha,
+            },
+          ],
+        }),
+      });
+
+      const commit = await requestGithubJson(`${repoBase}/git/commits`, {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message,
+          tree: tree.sha,
+          parents: [headSha],
+        }),
+      });
+
+      await requestGithubJson(`${repoBase}/git/refs/${ref}`, {
+        method: "PATCH",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sha: commit.sha,
+          force: false,
+        }),
+      });
     }
 
     async function publishAdminChanges() {
@@ -1875,71 +2060,45 @@
         writeAdminSettings({ ...settings, token: "" });
       }
 
-      const apiPath = encodeGithubPath(settings.path);
-      const url = `https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${apiPath}?ref=${encodeURIComponent(settings.branch)}`;
+      const siteJson = `${JSON.stringify(normalizeSiteData(siteData), null, 2)}\n`;
+      const siteBytes = estimateUtf8Bytes(siteJson);
+      const sizeLabel = siteBytes >= 1024 * 1024
+        ? `${(siteBytes / 1024 / 1024).toFixed(2)} MB`
+        : `${Math.round(siteBytes / 1024)} KB`;
 
-      setAdminStatus("正在提交到 GitHub，稍后 Cloudflare Pages 会自动部署。");
+      setAdminStatus(`正在提交到 GitHub（当前数据 ${sizeLabel}），稍后 Cloudflare Pages 会自动部署。`);
 
       try {
-        const commonHeaders = {
-          "Accept": "application/vnd.github+json",
-          "Authorization": `Bearer ${settings.token}`,
-        };
-
-        const content = encodeBase64Utf8(`${JSON.stringify(normalizeSiteData(siteData), null, 2)}\n`);
         let lastMessage = "";
 
         for (let attempt = 0; attempt < 2; attempt += 1) {
           if (attempt === 1) {
-            setAdminStatus("检测到文件刚被更新，正在自动重试一次。");
+            setAdminStatus("检测到分支刚被更新，正在自动重试一次。");
           }
 
-          const currentResp = await fetch(url, {
-            headers: {
-              ...commonHeaders,
-              "Cache-Control": "no-cache",
-            },
-          });
-          const current = await currentResp.json();
-          if (!currentResp.ok) {
-            throw new Error(current.message || "读取 GitHub 文件失败");
-          }
-
-          const payload = {
-            message: `update route ${draft.name || draft.id} via web admin`,
-            content,
-            sha: current.sha,
-            branch: settings.branch,
-          };
-
-          const updateResp = await fetch(`https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${apiPath}`, {
-            method: "PUT",
-            headers: {
-              ...commonHeaders,
-              "Content-Type": "application/json",
-              "Cache-Control": "no-cache",
-            },
-            body: JSON.stringify(payload),
-          });
-          const result = await updateResp.json();
-          if (updateResp.ok) {
+          try {
+            await commitSiteDataViaGitApi(
+              settings,
+              siteJson,
+              `update route ${draft.name || draft.id} via web admin`
+            );
             clearAdminSiteDraft();
             closeAdminModal();
             setAdminStatus("已提交到 GitHub。等 30 到 90 秒后刷新正式站，通常就能看到。", "success");
             return;
-          }
-
-          lastMessage = result.message || "提交 GitHub 失败";
-          if (!isGithubShaConflict(lastMessage) || attempt === 1) {
-            throw new Error(lastMessage);
+          } catch (err) {
+            lastMessage = err.message || "提交 GitHub 失败";
+            if (!isGithubPublishConflict(lastMessage) || attempt === 1) {
+              throw err;
+            }
           }
         }
         throw new Error(lastMessage || "提交 GitHub 失败");
       } catch (err) {
         console.error(err);
         const message = err.message || err;
-        if (isGithubShaConflict(message)) {
-          setAdminStatus("发布失败：文件刚被其他提交更新过，请重新点一次发布。", "error");
+        if (isGithubPublishConflict(message)) {
+          setAdminStatus("发布失败：分支刚被其他提交更新过，请重新点一次发布。", "error");
           return;
         }
         setAdminStatus(`发布失败：${message}`, "error");
@@ -1954,8 +2113,11 @@
       document.getElementById("detail-difficulty").textContent = route.difficulty;
       document.getElementById("detail-drive-time").textContent = route.drive_time || "待填写";
       document.getElementById("detail-estimated-time").textContent = route.estimated_time || route.duration || "待填写";
-      document.getElementById("detail-suitable").textContent = route.suitable;
-      document.getElementById("detail-weather").textContent = route.weather_rule;
+      document.getElementById("detail-distance").textContent = route.distance || "待填写";
+      document.getElementById("detail-elevation").textContent = route.elevation || "待填写";
+      document.getElementById("detail-suitable").textContent = route.suitable || "待填写";
+      document.getElementById("detail-weather").textContent = route.weather_rule || "待填写";
+      document.getElementById("detail-road-condition").textContent = route.road_condition || "待填写";
       document.getElementById("detail-review-summary").textContent = route.review.summary;
       renderList("detail-prep", route.prep);
       renderList("detail-risks", route.risks);
