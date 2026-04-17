@@ -1117,11 +1117,21 @@
     }
 
     function writeAdminSiteDraft(state) {
-      localStorage.setItem(ADMIN_SITE_DRAFT_KEY, JSON.stringify(state));
+      try {
+        localStorage.setItem(ADMIN_SITE_DRAFT_KEY, JSON.stringify(state));
+        return true;
+      } catch (err) {
+        console.warn("写入线路草稿失败", err);
+        return false;
+      }
     }
 
     function clearAdminSiteDraft() {
-      localStorage.removeItem(ADMIN_SITE_DRAFT_KEY);
+      try {
+        localStorage.removeItem(ADMIN_SITE_DRAFT_KEY);
+      } catch (err) {
+        console.warn("清除线路草稿失败", err);
+      }
     }
 
     function updateAdminEntry() {
@@ -1136,14 +1146,19 @@
 
     function persistCurrentSiteDraft(statusText) {
       if (!siteData) return false;
-      writeAdminSiteDraft({
+      const ok = writeAdminSiteDraft({
         savedAt: Date.now(),
         activeRegion,
         activeRouteId,
         siteData: normalizeSiteData(siteData),
       });
-      if (statusText) setAdminStatus(statusText, "success");
-      return true;
+      if (ok && statusText) {
+        setAdminStatus(statusText, "success");
+      }
+      if (!ok) {
+        setAdminStatus("当前浏览器草稿缓存已满，未发布草稿可能不会自动保留，但仍可继续发布到 GitHub。", "error");
+      }
+      return ok;
     }
 
     function textLines(value) {
@@ -1412,7 +1427,13 @@
     }
 
     function writeAdminSettings(settings) {
-      localStorage.setItem(ADMIN_SETTINGS_KEY, JSON.stringify(settings));
+      try {
+        localStorage.setItem(ADMIN_SETTINGS_KEY, JSON.stringify(settings));
+        return true;
+      } catch (err) {
+        console.warn("写入 GitHub 设置失败", err);
+        return false;
+      }
     }
 
     function fillAdminSettingsForm() {
@@ -1438,11 +1459,11 @@
 
     function persistAdminSettings() {
       const settings = collectAdminSettingsFromForm();
-      writeAdminSettings({
+      const ok = writeAdminSettings({
         ...settings,
         token: settings.rememberToken ? settings.token : "",
       });
-      setAdminStatus("GitHub 设置已保存到当前浏览器。", "success");
+      setAdminStatus(ok ? "GitHub 设置已保存到当前浏览器。" : "当前浏览器无法保存 GitHub 设置，请手动保留 token 后继续发布。", ok ? "success" : "error");
     }
 
     function clearStoredToken() {
@@ -2038,7 +2059,14 @@
     }
 
     async function publishAdminChanges() {
-      const draft = applyAdminDraftToPage();
+      let draft = null;
+      try {
+        draft = applyAdminDraftToPage();
+      } catch (err) {
+        console.error(err);
+        setAdminStatus(`发布前准备失败：${err.message || err}`, "error");
+        return;
+      }
       if (!draft || !siteData) {
         setAdminStatus("当前没有可发布的线路变更。", "error");
         return;
